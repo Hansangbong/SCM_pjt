@@ -6,7 +6,7 @@
 	<c:forEach items="${list}" var="order">
 		<tr>
 		    <td>${order.seq}</td>
-			<td>${order.order_company}</td>
+			<td>${order.company_name}</td>
 			<td>${order.product_name}</td>
 			<td><fmt:formatNumber value="${order.item_price}" pattern="#,### 원"/></td>
 			<td>${order.order_count}</td>

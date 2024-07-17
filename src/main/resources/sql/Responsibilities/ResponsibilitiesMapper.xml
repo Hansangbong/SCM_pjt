@@ -6,13 +6,16 @@
 	<select id="orderList" resultType="map">
 
 		SELECT
-		   od.seq, od.order_company, od.product_name, it.item_price, od.order_count, 
+		   od.seq, oc.company_name, od.product_name, it.item_price, od.order_count, 
 		   (it.item_price * od.order_count) AS total_price, od.order_date, od.signYN, od.depositYN  
 		FROM 
 		    tb_order od
 		LEFT OUTER JOIN
 		    tb_item_info it 
 		ON od.item_code = it.item_code 
+		LEFT OUTER JOIN
+			tb_order_company oc
+		ON oc.company_seq = od.company_seq 
 		<where>
 			<if test="(searchTitle != null) and (!''.equals(searchTitle) and searchSelect == 'company')">
 				and od.order_company Like CONCAT('%', #{searchTitle}, '%')

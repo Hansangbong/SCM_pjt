@@ -166,8 +166,61 @@ public class ManagementServiceImpl implements ManagementService {
 	public List<ManagementModel> getCodeList(Map<String, Object> paramMap) throws Exception {
 		// TODO Auto-generated method stub
 		return managementDao.getCodeList(paramMap);
-	} 
+	}
 	
+	@Override
+	public List<ManagementModel> getDetailCodeList(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.getDetailCodeList(paramMap);
+	}
+
+	@Override
+	public List<Map<String, Object>> orderComponyDetail(Map<String, Object> paramMap) {
+		// TODO Auto-generated method stub
+		return managementDao.orderComponyDetail(paramMap);
+	} 
+
+	@Override
+	public int comCodeAdjust(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.comCodeAdjust(paramMap);
+	}
+	
+	@Override
+	public int comDetailCodeAdjust(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.comDetailCodeAdjust(paramMap);
+	}
+	
+	@Override
+	public int comCodeRegist(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.comCodeRegist(paramMap);
+	}
+	
+	@Override
+	public int comDetailCodeRegist(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.comDetailCodeRegist(paramMap);
+	}
+	
+	@Override
+	public int comCodeDelete(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.comCodeDelete(paramMap);
+	}
+
+	@Override
+	public List<Map<String, Object>> orderComSelectItem(Map<String, Object> paramMap) {
+		// TODO Auto-generated method stub
+		return managementDao.orderComSelectItem(paramMap);
+	}
+	@Override
+	public void newItemSave(Map<String, Object> paramMap) {
+		// TODO Auto-generated method stub
+		managementDao.newItemSave(paramMap);
+	}
+
 //	@Override
 //	public int getCodeList(Map<String, Object> paramMap) throws Exception {
 //		// TODO Auto-generated method stub

@@ -54,6 +54,24 @@ public interface ManagementService {
 	
 	public List<ManagementModel> getCodeList(Map<String, Object> paramMap) throws Exception;
 	
+	public List<ManagementModel> getDetailCodeList(Map<String, Object> paramMap) throws Exception;
+
+	public List<Map<String, Object>> orderComponyDetail(Map<String, Object> paramMap);
+
+	public List<Map<String, Object>> orderComSelectItem(Map<String, Object> paramMap);
+
+	public void newItemSave(Map<String, Object> paramMap);
+	
+	public int comCodeAdjust(Map<String, Object> paramMap) throws Exception;
+	
+	public int comDetailCodeAdjust(Map<String, Object> paramMap) throws Exception;
+	
+	public int comCodeRegist(Map<String, Object> paramMap) throws Exception;
+	
+	public int comDetailCodeRegist(Map<String, Object> paramMap) throws Exception;
+	
+	public int comCodeDelete(Map<String, Object> paramMap) throws Exception;
+	
 	//public int getCodeList(Map<String, Object> paramMap) throws Exception;
 	
 	
@@ -74,4 +92,5 @@ public interface ManagementService {
 	public int noticeUpdateFile(Map<String, Object> paramMap, HttpServletRequest request) throws Exception;
 	*/
 }
+
 

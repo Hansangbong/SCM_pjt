@@ -9,7 +9,12 @@
 			<td>${list.delivery_name}</td>
 			<td>${list.storage_name}</td>
 			<td>${list.delivery_end_loc }</td>
-			<td>${list.delivery_state}</td>
+			<c:if test="${list.delivery_state eq '배송중'}">
+				<td style="color: blue">${list.delivery_state}</td>
+			</c:if>
+			<c:if test="${list.delivery_state eq '배송완료'}">
+				<td style="color: green;">${list.delivery_state}</td>
+			</c:if>
 			<td><a href="javascript:deliveryModal(${list.delivery_num});"><button>상세보기</button></a></td>
 		</tr>
 		 

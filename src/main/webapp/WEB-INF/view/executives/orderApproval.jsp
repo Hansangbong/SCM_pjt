@@ -5,7 +5,7 @@
 
 	<c:forEach items="${N}" var="list">
 	    <tr>
-	        <td style="color: red">${list.order_company} (미승인)</td>
+	        <td style="color: red">${list.company_name} (미승인)</td>
 	        <td>${list.product_name}</td>
 	        <td><fmt:formatNumber value="${list.provide_value}" pattern="#,### 원"/></td>
 	        <td>${list.order_count}</td>
@@ -16,7 +16,7 @@
 	</c:forEach>
 	<c:forEach items="${Y}" var="list">
 	    <tr>
-	        <td style="color: blue">${list.order_company} (승인)</td>
+	        <td style="color: blue">${list.company_name} (승인)</td>
 	        <td>${list.product_name}</td>
 	        <td><fmt:formatNumber value="${list.provide_value}" pattern="#,### 원"/></td>
 	        <td>${list.order_count}</td>

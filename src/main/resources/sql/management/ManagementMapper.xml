@@ -164,6 +164,16 @@
 			LIMIT #{startSeq}, #{pageSize}
 	</select>
 	
+		<select id="getDetailCodeList" resultType="kr.happyjob.study.management.model.ManagementModel">
+	/* kr.happyjob.study.management.dao.ManagementDao.getDetailCodeList */
+		SELECT	group_code ,
+				detail_code ,
+				detail_name,
+				use_yn
+		FROM tb_detail_code
+		WHERE group_code = #{group_code}
+	</select>
+	
 		<select id="codeCnt" resultType="int">
 	/* kr.happyjob.study.management.dao.ManagementDao.codeCnt */
 		SELECT 
@@ -377,5 +387,127 @@
 		
 	
 	</delete>
+
+	<update id="comCodeAdjust">
+	/* kr.happyjob.study.management.dao.ManagementDao.comCodeAdjust */
+		update tb_group_code
+		   <set>
+		   <if test="group_code != null and !''.equals(group_code)">
+	            group_code = #{group_code},
+	        </if> 
+		   <if test="group_name != null and !''.equals(group_name) ">
+	            group_name = #{group_name},
+	        </if>
+	        <if test="use_yn != null and !''.equals(use_yn)">
+				use_yn = #{use_yn}
+	        </if>
+	        </set>
+			WHERE group_code = #{group_id}
+	</update>
 	
+	<update id="comDetailCodeAdjust">
+	/* kr.happyjob.study.management.dao.ManagementDao.comDetailCodeAdjust */
+		update tb_detail_code
+		   <set>
+		   <if test="detail_code != null and !''.equals(detail_code)">
+	            detail_code = #{detail_code},
+	        </if> 
+		   <if test="detail_name != null and !''.equals(detail_name) ">
+	            detail_name = #{detail_name},
+	        </if>
+	        <if test="use_yn != null and !''.equals(use_yn)">
+				use_yn = #{use_yn}
+	        </if>
+	        </set>
+			WHERE detail_code = #{detail_id}
+	</update>
+	
+	<insert id="comCodeRegist">
+	/* kr.happyjob.study.management.dao.ManagementDao.comCodeRegist */
+		insert into tb_group_code
+			( 
+				group_code,
+				group_name,
+				use_yn,
+				reg_date,
+				update_date,
+				reg_id,
+				update_id
+			) values (
+				#{group_code},
+				#{group_name},
+				#{use_yn},
+				NOW(),
+				NOW(),
+				#{loginId},
+				#{loginId}
+			)
+	</insert>
+	
+	<insert id="comDetailCodeRegist">
+	/* kr.happyjob.study.management.dao.ManagementDao.comDetailCodeRegist */
+		insert into tb_detail_code
+			( 
+				detail_code, 
+				group_code, 
+				detail_name, 
+				use_yn, 
+				reg_id, 
+				reg_date,
+				update_id, 
+				update_date
+			) values (
+				#{group_code},
+				#{group_name},
+				#{use_yn},
+				NOW(),
+				NOW(),
+				#{loginId},
+				#{loginId}
+			)
+	</insert>
+	
+	<delete id="comCodeDelete">
+	/* kr.happyjob.study.management.dao.ManagementDao.comCodeDelete */
+		DELETE FROM tb_group_code
+		WHERE group_code = #{group_code}
+	</delete>
+
+	<select id="orderComponyDetail" resultType="map">
+	
+		SELECT oc.company_seq, oc.company_name, ci.item_code, it.item_name 
+		from tb_company_item ci
+		left join tb_order_company oc
+		ON ci.company_seq = oc.company_seq 
+		left join tb_item_info it
+		on it.item_code = ci.item_code 
+		WHERE ci.company_seq =  #{company_seq}
+	
+	</select>
+	
+	<select id="orderComSelectItem" resultType="map">
+	
+		SELECT 
+			item_code, item_name
+		FROM 
+			tb_item_info
+		WHERE 
+			(item_code, item_name) NOT IN 
+				(
+			    SELECT ci.item_code, it.item_name
+			    FROM tb_company_item ci
+			    LEFT JOIN tb_order_company oc ON ci.company_seq = oc.company_seq
+			    LEFT JOIN tb_item_info it ON it.item_code = ci.item_code
+			    WHERE ci.company_seq = #{company_seq}
+				)
+	
+	</select>
+	
+	<insert id="newItemSave">
+	
+	 	INSERT INTO tb_company_item (company_seq, item_code)
+		VALUES (#{company_seq}, #{item_code})
+		
+	</insert>
+
 </mapper>

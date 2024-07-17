@@ -47,12 +47,30 @@ public interface ManagementDao {
 	public List<Map<String, Object>> warehouseDetail(Map<String, Object> paramMap);
 	
 	public List<ManagementModel> getCodeList(Map<String, Object> paramMap) throws Exception;
+	
+	public List<ManagementModel> getDetailCodeList(Map<String, Object> paramMap) throws Exception;
 
 	public List<Map<String, Object>> orderCompanyList(Map<String, Object> paramMap);
 
 	public int newCompanySave(Map<String, Object> paramMap);
 
 	public void orderComponyDelete(Map<String, Object> paramMap);
+	
+	public int comCodeAdjust(Map<String, Object> paramMap) throws Exception;
+	
+	public int comDetailCodeAdjust(Map<String, Object> paramMap) throws Exception;
+	
+	public int comCodeRegist(Map<String, Object> paramMap) throws Exception;
+	
+	public int comDetailCodeRegist(Map<String, Object> paramMap) throws Exception;
+	
+	public int comCodeDelete(Map<String, Object> paramMap) throws Exception;
+
+	public List<Map<String, Object>> orderComponyDetail(Map<String, Object> paramMap);
+
+	public List<Map<String, Object>> orderComSelectItem(Map<String, Object> paramMap);
+
+	public void newItemSave(Map<String, Object> paramMap);
 
 //	public int noticeSave(Map<String, Object> paramMap) throws Exception;
 //

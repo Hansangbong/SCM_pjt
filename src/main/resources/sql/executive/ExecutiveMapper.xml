@@ -121,13 +121,16 @@
 	<select id="orderApprovalY" resultType="map">
 	
 		SELECT 
-			od.product_name, DATE_FORMAT(od.order_date, "%Y-%m-%d") as order_date, od.order_count, od.order_company, it.provide_value, (od.order_count * it.provide_value) as sum
+			od.product_name, DATE_FORMAT(od.order_date, "%Y-%m-%d") as order_date, od.order_count, oc.company_name, it.provide_value, (od.order_count * it.provide_value) as sum
 		FROM 
 			tb_order od
 		LEFT JOIN 
 			tb_item_info it
 		ON 
 			od.item_code = it.item_code
+		LEFT OUTER JOIN
+			tb_order_company oc
+		ON oc.company_seq = od.company_seq 
 		WHERE 
 			od.signYN = 'Y'
 		order by order_date desc
@@ -137,7 +140,7 @@
 	<select id="orderApprovalN" resultType="map">
 	
 		SELECT 
-			od.product_name, DATE_FORMAT(od.order_date, "%Y-%m-%d") as order_date, od.order_count, od.order_company,
+			od.product_name, DATE_FORMAT(od.order_date, "%Y-%m-%d") as order_date, od.order_count, oc.company_name,
 			it.provide_value, (od.order_count * it.provide_value) as sum, od.seq
 		FROM 
 			tb_order od
@@ -145,6 +148,9 @@
 			tb_item_info it
 		ON 
 			od.item_code = it.item_code
+		LEFT OUTER JOIN
+			tb_order_company oc
+		ON oc.company_seq = od.company_seq
 		WHERE 
 			od.signYN = 'N'
 		order by order_date

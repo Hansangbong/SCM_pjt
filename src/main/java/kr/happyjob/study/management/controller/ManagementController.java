@@ -416,6 +416,48 @@ public class ManagementController {
 		
 		return "management/orderCompany";
 	}
+	@RequestMapping("orderComponyDetail.do")
+	public String orderComponyDetail(Model model, @RequestParam Map<String, Object> paramMap){
+		
+		logger.info("+ Start " + className + ".orderComponyDetail");
+		logger.info("   - paramMap : " + paramMap);
+		
+		
+		List<Map<String, Object>> list = managementService.orderComponyDetail(paramMap);
+		logger.info("   - list : " + list);
+		
+		model.addAttribute("list", list);
+		
+		
+		return "management/orderComponyDetail";
+	}
+	@RequestMapping("orderComSelectItem.do")
+	public String orderComSelectItem(Model model, @RequestParam Map<String, Object> paramMap){
+		
+		logger.info("+ Start " + className + ".orderComponyDetail");
+		logger.info("   - paramMap : " + paramMap);
+		
+		
+		List<Map<String, Object>> list = managementService.orderComSelectItem(paramMap);
+		logger.info("   - list : " + list);
+		
+		model.addAttribute("select", list);
+		
+		
+		return "management/orderComponyDetail";
+	}
+	@RequestMapping("newItemSave.do")
+	public String newItemSave(Model model, @RequestParam Map<String, Object> paramMap){
+		
+		logger.info("+ Start " + className + ".newItemSave");
+		logger.info("   - paramMap : " + paramMap);
+		
+		
+		managementService.newItemSave(paramMap);
+		
+		
+		return "management/orderComponyDetail";
+	}
 
 	@RequestMapping("getCodeList.do")
 	public String getCodeList(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
@@ -438,6 +480,156 @@ public class ManagementController {
 		model.addAttribute("codeCnt", codeCnt);
 
 		return "management/codeView";
+	}
+	
+	@RequestMapping("getDetailCodeList.do")
+	public String getDetailCodeList(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".getDetailCodeList!!!");
+		logger.info("   - paramMap : " + paramMap);
+		
+		//int cpage = Integer.valueOf((String) paramMap.get("currentPage"));
+		//int pageSize = Integer.valueOf((String) paramMap.get("pageSize"));
+
+		//int startSeq = (cpage - 1) * pageSize;
+
+		//paramMap.put("startSeq", startSeq);
+		//paramMap.put("pageSize", pageSize);
+
+		List<ManagementModel> codeList = managementService.getDetailCodeList(paramMap);
+		int codeCnt = managementService.codeCnt(paramMap);
+
+		model.addAttribute("codeList", codeList);
+		model.addAttribute("codeCnt", codeCnt);
+
+		return "management/detailCodeView";
+	}
+	
+	@RequestMapping("comCodeAdjust.do")
+	@ResponseBody
+	public Map<String, Object> comCodeAdjust(@RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".comCodeAdjust");
+		logger.info("   - paramMap : " + paramMap);
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		int result = 0;
+		String returnMsg = "";
+
+		result = managementService.comCodeAdjust(paramMap);
+
+		if (result > 0) {
+			returnMsg = "success";
+		} else {
+			returnMsg = "fail";
+		}
+
+		resultMap.put("result", returnMsg);
+
+		return resultMap;
+
+	}
+	
+	@RequestMapping("comDetailCodeAdjust.do")
+	@ResponseBody
+	public Map<String, Object> comDetailCodeAdjust(@RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".comDetailCodeAdjust");
+		logger.info("   - paramMap : " + paramMap);
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		int result = 0;
+		String returnMsg = "";
+
+		result = managementService.comDetailCodeAdjust(paramMap);
+
+		if (result > 0) {
+			returnMsg = "success";
+		} else {
+			returnMsg = "fail";
+		}
+
+		resultMap.put("result", returnMsg);
+
+		return resultMap;
+	}
+	
+	@RequestMapping("comCodeRegist.do")
+	@ResponseBody
+	public Map<String, Object> comCodeRegist(@RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".comCodeRegist");
+		logger.info("   - paramMap : " + paramMap);
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		String loginId = (String) session.getAttribute("loginId");
+		paramMap.put("loginId", loginId);
+		int result = 0;
+		String returnMsg = "";
+
+		result = managementService.comCodeRegist(paramMap);
+
+		if (result > 0) {
+			returnMsg = "success";
+		} else {
+			returnMsg = "fail";
+		}
+
+		resultMap.put("result", returnMsg);
+
+		return resultMap;
+	}
+	
+	@RequestMapping("comDetailCodeRegist.do")
+	@ResponseBody
+	public Map<String, Object> comDetailCodeRegist(@RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".comDetailCodeRegist");
+		logger.info("   - paramMap : " + paramMap);
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		String loginId = (String) session.getAttribute("loginId");
+		paramMap.put("loginId", loginId);
+		int result = 0;
+		String returnMsg = "";
+
+		result = managementService.comDetailCodeRegist(paramMap);
+
+		if (result > 0) {
+			returnMsg = "success";
+		} else {
+			returnMsg = "fail";
+		}
+
+		resultMap.put("result", returnMsg);
+
+		return resultMap;
+	}
+	
+	@RequestMapping("comCodeDelete.do")
+	@ResponseBody
+	public Map<String, Object> comCodeDelete(@RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".comCodeDelete");
+		logger.info("   - paramMap : " + paramMap);
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		//String loginId = (String) session.getAttribute("loginId");
+		//paramMap.put("loginId", loginId);
+		int result = 0;
+		String returnMsg = "";
+
+		result = managementService.comCodeDelete(paramMap);
+
+		if (result > 0) {
+			returnMsg = "success";
+		} else {
+			returnMsg = "fail";
+		}
+
+		resultMap.put("result", returnMsg);
+
+		return resultMap;
 	}
 
 }

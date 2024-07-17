@@ -77,7 +77,32 @@
 											
 						</div>
 						<a class="btnType red" name="newRegister"  id="newRegister"><span>등록</span></a>
-								
+						<br>
+						
+						<div class="divDetailList2">
+							<table class="col">
+								<caption>caption</caption>
+		                            <colgroup>
+						                   <col width="50px">
+						                   <col width="130px">
+						                    <col width="90px">
+						                   <col width="150px">
+						                   <col width="50px">
+						                   <col width="50px">
+					                 </colgroup>
+								<thead>
+									<tr>
+							              <th scope="col">순번</th>
+							              <th scope="col">그룹 코드</th>
+							              <th scope="col">상세 코드</th>
+							              <th scope="col">상세 코드명 </th>
+							              <th scope="col">사용 여부</th>
+							              <th scope="col">비고</th>
+									</tr>
+								</thead>
+								<tbody id="detailCodeView"></tbody>
+							</table>
+					<a class="btnType red" name="newRegister"  id="newDetailRegister"><span>새 상세 코드 등록</span></a>			
 					</div> <!--// content -->
 
 					<div id="myModal" class="modal">
@@ -93,17 +118,46 @@
 							<input type="radio" id="yn2" name="codeRadio" value="1" style="height: 25px; margin-left: 10px;"/>
 							NO
 							<br>
+							<input type="hidden" id="groupCodeModalOrigin" >
+							<input type="hidden" id="groupCodeNameModalOrigin" >
+							<input type="hidden" id="groupYnOrigin" >
+						
+							
 							<div class="modal-footer">
 								<button class="btn2 btn-primary">저장</button>
                 				<button class="btn1 btn-primary">삭제</button>
                 				<button class="btn btn-primary">취소</button>						
             				</div>
-            					
-							
-							
-							
         				</div>
 					</div>
+					
+					<div id="myModal2" class="modal">
+						<div class="modal-content">
+            				<span class="close">&times;</span>
+            				상세 코드
+							<input type="text" id="detailCodeModal" style="height: 25px; margin-right: 10px;"/><br>
+							상세 코드 명
+							<input type="text" id="detailCodeNameModal" style="height: 25px; margin-right: 10px;"/><br>
+							사용 여부
+							<input type="radio" id="detailyn1" name="codeRadio" value="0" style="height: 25px; margin-left: 3px; margin-right: 1px;"/>
+							YES
+							<input type="radio" id="detailyn2" name="codeRadio" value="1" style="height: 25px; margin-left: 10px;"/>
+							NO
+							<br>
+							<input type="hidden" id="detailCodeModalOrigin" >
+							<input type="hidden" id="detailCodeNameModalOrigin" >
+							<input type="hidden" id="detailYnOrigin" >
+						
+							
+							<div class="modal-footer">
+								<button class="btn2Dtail btn-primary">저장</button>
+                				<button class="btn1Dtail btn-primary">삭제</button>
+                				<button class="btnDtail btn-primary">취소</button>						
+            				</div>
+        				</div>
+					</div>
+					
+					
 					<h3 class="hidden">풋터 영역</h3>
 						<jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
 				</li>
@@ -129,16 +183,39 @@ $(document).ready(function() {
     	$("#myModal").hide();
     });
     
-    $(".btn2").click(function() {
-    	console.log("클릭됐당")
+    $(".btn1").click(function() {
+    	comCodeDelete();
     });
+    
+    $(".btn2").click(function() {
+    	if( $('#groupCodeModalOrigin').val() == ''){
+    		comCodeRegist();
+    	}
+    	else {
+    		comCodeAdjust();
+    	}
+    });
+    
+    $("#newRegister").click(function() {
+    	$(".btn1").hide();
+    	$("#myModal").show();
+    	$('#groupCodeModal').val('');
+    	$('#groupCodeNameModal').val('');
+    	$('#yn1').prop('disabled');
+    	$('#groupCodeModalOrigin').val('');
+    });
+    
+    
     
 });
 
+
 $(function(){
 	getCodeList();
-	//$("#myModal").hide();
+	//$("#myModal2").hide();
+	$('.divDetailList2').hide();
 })
+
 
 function getCodeList(cpage){
 	cpage = cpage || 1;
@@ -160,8 +237,74 @@ function getCodeList(cpage){
 	callAjax("/management/getCodeList.do", "post", "text", false, param,callBackFunction);
 }
 
+
+function comCodeAdjust(){ // 저장 버튼 클릭 시 발동
+	var group_code = $('#groupCodeModal').val();
+	var group_name= $('#groupCodeNameModal').val();
+	var checked = $('#yn1').prop('checked') == true ? 'Y' : 'N';
+	
+	var group_codeOri = $('#groupCodeModalOrigin').val();
+	var group_nameOri= $('#groupCodeNameModalOrigin').val();
+	var checkedOri = $('#groupYnOrigin').val();
+	
+	var test1 = group_code != group_codeOri ? group_code : '';
+	var test2 = group_name != group_nameOri ? group_name : '';
+	var test3 = checked != checkedOri ? checked : '';
+	
+	
+	
+	var param = {
+		group_code : test1,
+		group_name : test2,
+		use_yn : test3,
+		group_id : group_codeOri
+	};
+	
+	var callBackFunction = function(response){
+		alert("수정 됐습니다");
+	}
+	
+	callAjax("/management/comCodeAdjust.do", "post", "text", false, param,callBackFunction);
+}
+
+
+function comCodeRegist(){ // 등록 버튼 클릭 시 발동
+	var group_code = $('#groupCodeModal').val();
+	var group_name= $('#groupCodeNameModal').val();
+	var checked = $('#yn1').prop('checked') == true ? 'Y' : 'N';
+	
+	
+	var param = {
+			group_code : group_code,
+			group_name : group_name,
+			use_yn : checked
+	};
+	
+	
+	
+	var callBackFunction = function(response){
+		alert("등록 됐습니다");
+	}
+	
+	callAjax("/management/comCodeRegist.do", "post", "text", false, param,callBackFunction);
+}
+
+function comCodeDelete(){ // 삭제 버튼 클릭 시 발동
+	var group_codeOri = $('#groupCodeModalOrigin').val();
+	
+	var param = {
+		group_code : group_codeOri
+	};
+	
+	var callBackFunction = function(response){
+		alert("삭제 됐습니다");
+	}
+	
+	callAjax("/management/comCodeDelete.do", "post", "text", false, param,callBackFunction);
+}
+
 </script>
-<style>
+
 <style>
         /* 모달 배경 */
         .modal {
@@ -211,15 +354,15 @@ function getCodeList(cpage){
             bottom: 20px;
             right: 20px;
         }
-        .modal-footer .btn1 {
+        .modal-footer .btn2 {
             position: absolute;
             bottom: 20px;
             right: 60px;
         }
-        .modal-footer .btn2 {
+        .modal-footer .btn1 {
             position: absolute;
             bottom: 20px;
             right: 100px;
         }
-    </style>
 </style>
+

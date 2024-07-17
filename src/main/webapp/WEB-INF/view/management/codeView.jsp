@@ -22,7 +22,7 @@
                     <td class="groupName" data-groupname="${list.group_name}">${list.group_name}</td>
                     <td class="groupYn" data-groupyn="${list.use_yn}">${list.use_yn}</td>
                     <td>${list.reg_date}</td>
-                    <td ><button class="adjustBtn">수정</button></td>
+                    <td class="adjust" data-groupid="${list.group_code}"><button class="adjustBtn">수정</button></td>
                     
                 </tr>
                <c:set var="nRow" value="${nRow + 1}" />
@@ -37,6 +37,7 @@ $(document).ready(function() {
 	
 	$(document).on('click', '.adjustBtn', function() {
 		var row = $(this).closest("tr");
+		$(".btn1").show();
 		$("#myModal").show();
         
         // 행의 데이터 추출
@@ -45,29 +46,46 @@ $(document).ready(function() {
         var groupYn = row.find(".groupYn").data("groupyn");
         var regDate = row.find("td:nth-child(5)").text(); // 등록일 텍스트 추출
 
-        // 추출한 데이터 콘솔에 출력 (디버깅 용도)
-        console.log("Group Code: " + groupCode);
-        console.log("Group Name: " + groupName);
-        console.log("Group YN: " + groupYn);
-        console.log("Reg Date: " + regDate);
         
         $("#groupCodeModal").val(groupCode);
+        $("#groupCodeModalOrigin").val(groupCode);
 		$("#groupCodeNameModal").val(groupName);
+		$("#groupCodeNameModalOrigin").val(groupName);
+		
 		 
 		if(groupYn == 'Y'){
-			$("input[name='codeRadio'][value=0]").prop("checked", true);
+			$("input[name='codeRadio'][value=0]").prop("checked", true); //yes 채크
+			$("#groupYnOrigin").val(groupYn);
 		} else {
-			$("input[name='codeRadio'][value=1]").prop("checked", true);
+			$("input[name='codeRadio'][value=1]").prop("checked", true); // no 채크
+			$("#groupYnOrigin").val(groupYn);
 		}
 		
 	});
-				
-		
-		
-		
 	
-    
+	 $('.groupCode').click(function() {
+		 var groupCode = $(this).data('groupcode');
+		 getDetailCodeList(groupCode);
+		 $('.divDetailList2').show();
+	 });
+	 
 });
+
+function getDetailCodeList(groupCode){
+
+	
+	var param = {		
+			group_code : groupCode
+	};
+	
+	var callBackFunction = function(response){
+		$("#detailCodeView").empty().append(response);
+	}
+	
+	callAjax("/management/getDetailCodeList.do", "post", "text", false, param,callBackFunction);
+}
+
+
 </script>
     
     

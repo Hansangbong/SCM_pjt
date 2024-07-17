@@ -30,9 +30,19 @@ public class ManagementModel {
 	private String obtain_count;
 	private String item_name;
 	private String group_code;
-	private String use_yn;
+	private String detail_code;
 	private String group_name;
+	private String detail_name;
+	private String use_yn;
 	private String reg_date;
+	
+	public String getDetail_code() {
+		return detail_code;
+	}
+	
+	public String getDetail_name() {
+		return detail_name;
+	}
 	
 	public String getReg_date() {
 		return reg_date;
