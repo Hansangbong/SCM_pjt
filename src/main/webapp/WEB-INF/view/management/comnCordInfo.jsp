@@ -33,15 +33,14 @@
 					<p class="conTitle">
 						
 						<select id="searchCondition">
-							<option value="0">그룹코드명</option>
+							<option value="0">그룹코드</option>
 							<option value="1">상세코드</option>
-							<option value="1">상세코드명</option>
+							<option value="2">상세코드명</option>
 						</select> 
 						
 						<span class="fr">					
                           <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
-                          <input type="checkbox" name="xxx" value="yyy" unchecked>
-							삭제된 정보 표시
+                          
                           <a class="btnType red" name="searchbtn"  id="searchBtn"><span>검색</span></a>
                           
 						</span>
@@ -139,9 +138,9 @@
 							상세 코드 명
 							<input type="text" id="detailCodeNameModal" style="height: 25px; margin-right: 10px;"/><br>
 							사용 여부
-							<input type="radio" id="detailyn1" name="codeRadio" value="0" style="height: 25px; margin-left: 3px; margin-right: 1px;"/>
+							<input type="radio" id="detailyn1" name="detailcodeRadio" value="0" style="height: 25px; margin-left: 3px; margin-right: 1px;"/>
 							YES
-							<input type="radio" id="detailyn2" name="codeRadio" value="1" style="height: 25px; margin-left: 10px;"/>
+							<input type="radio" id="detailyn2" name="detailcodeRadio" value="1" style="height: 25px; margin-left: 10px;"/>
 							NO
 							<br>
 							<input type="hidden" id="detailCodeModalOrigin" >
@@ -205,14 +204,16 @@ $(document).ready(function() {
     	$('#groupCodeModalOrigin').val('');
     });
     
-    
+    $("#searchBtn").click(function() {  //검색 버튼 클릭 이벤트
+    	detailSearch();
+    });
     
 });
 
 
 $(function(){
 	getCodeList();
-	//$("#myModal2").hide();
+	
 	$('.divDetailList2').hide();
 })
 
@@ -220,7 +221,6 @@ $(function(){
 function getCodeList(cpage){
 	cpage = cpage || 1;
 	
-	// 공지사항 데이터 보여주는 로직
 	var param = {
 			currentPage : cpage,
 			pageSize : pageSize
@@ -262,6 +262,7 @@ function comCodeAdjust(){ // 저장 버튼 클릭 시 발동
 	
 	var callBackFunction = function(response){
 		alert("수정 됐습니다");
+		$("#myModal").hide();
 	}
 	
 	callAjax("/management/comCodeAdjust.do", "post", "text", false, param,callBackFunction);
@@ -284,6 +285,7 @@ function comCodeRegist(){ // 등록 버튼 클릭 시 발동
 	
 	var callBackFunction = function(response){
 		alert("등록 됐습니다");
+		$("#myModal").hide();
 	}
 	
 	callAjax("/management/comCodeRegist.do", "post", "text", false, param,callBackFunction);
@@ -298,9 +300,51 @@ function comCodeDelete(){ // 삭제 버튼 클릭 시 발동
 	
 	var callBackFunction = function(response){
 		alert("삭제 됐습니다");
+		$("#myModal").hide();
 	}
 	
 	callAjax("/management/comCodeDelete.do", "post", "text", false, param,callBackFunction);
+}
+
+function detailSearch(cpage){ /////검색 기능
+	cpage = cpage || 1;
+	var searchTitle = $('#searchTitle').val();
+	var condition = $('#searchCondition').val();
+	var groupCode = "";
+	var detailCode = "";
+	var detailName = "";
+	
+	switch(condition){
+	case "0":
+		groupCode = searchTitle;
+		break;
+	case "1":
+		detailCode = searchTitle;
+		break;
+	case "2":
+		detailName = searchTitle;
+		break;
+	}
+	
+	var param = {
+			searchGroupCode : groupCode,
+			searchDetailCode : detailCode,
+			searchDetailName : detailName,
+			condition : condition,
+			currentPage : cpage,
+			pageSize : pageSize
+	};
+	
+	var callBackFunction = function(response){
+		$("#codeView").empty().append(response);
+		
+		var pagieNavigateHtml = getPaginationHtml(cpage, $("#totcnt").val(), pageSize, pageBlockPage, "detailSearch")
+		$("#pagingNavi").empty().append(pagieNavigateHtml);
+		$("#currentPage").val(cpage);
+	}
+	
+	
+	callAjax("/management/comnCodeSearch.do", "post", "text", false, param,callBackFunction);
 }
 
 </script>
@@ -365,4 +409,3 @@ function comCodeDelete(){ // 삭제 버튼 클릭 시 발동
             right: 100px;
         }
 </style>
-

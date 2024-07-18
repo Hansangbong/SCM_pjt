@@ -63,11 +63,11 @@ $(document).ready(function() {
 		
 	});
 	
-	 $('.groupCode').click(function() {
+	$('.groupCode').click(function() {
 		 var groupCode = $(this).data('groupcode');
 		 getDetailCodeList(groupCode);
 		 $('.divDetailList2').show();
-	 });
+	});
 	 
 });
 
