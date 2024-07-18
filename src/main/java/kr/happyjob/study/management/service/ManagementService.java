@@ -52,6 +52,12 @@ public interface ManagementService {
 	
 	public List<ManagementModel> supplySearch2(Map<String, Object> paramMap)throws Exception;
 	
+	public List<ManagementModel> comnCodeSearch(Map<String, Object> paramMap)throws Exception;
+	
+	public List<ManagementModel> comnCodeSearch2(Map<String, Object> paramMap)throws Exception;
+	
+	public List<ManagementModel> comnCodeSearch3(Map<String, Object> paramMap)throws Exception;
+	
 	public List<ManagementModel> getCodeList(Map<String, Object> paramMap) throws Exception;
 	
 	public List<ManagementModel> getDetailCodeList(Map<String, Object> paramMap) throws Exception;
@@ -71,6 +77,20 @@ public interface ManagementService {
 	public int comDetailCodeRegist(Map<String, Object> paramMap) throws Exception;
 	
 	public int comCodeDelete(Map<String, Object> paramMap) throws Exception;
+	
+	public int comDetailCodeDelete(Map<String, Object> paramMap) throws Exception;
+	
+	public List<ManagementModel> getProductList(Map<String, Object> paramMap) throws Exception;
+	
+	public List<ManagementModel> getDetailProductList(Map<String, Object> paramMap) throws Exception;
+	
+	public int productCnt(Map<String, Object> paramMap) throws Exception;
+	
+	public List<ManagementModel> productSearch(Map<String, Object> paramMap)throws Exception;
+	
+	public int productRegist(Map<String, Object> paramMap) throws Exception;
+	
+	public int productDelete(Map<String, Object> paramMap) throws Exception;
 	
 	//public int getCodeList(Map<String, Object> paramMap) throws Exception;
 	
@@ -92,5 +112,4 @@ public interface ManagementService {
 	public int noticeUpdateFile(Map<String, Object> paramMap, HttpServletRequest request) throws Exception;
 	*/
 }
-
 

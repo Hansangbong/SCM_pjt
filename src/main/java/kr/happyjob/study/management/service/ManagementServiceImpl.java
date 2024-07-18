@@ -161,6 +161,24 @@ public class ManagementServiceImpl implements ManagementService {
 		// TODO Auto-generated method stub
 		return managementDao.supplySearch2(paramMap);
 	}
+	
+	@Override
+	public List<ManagementModel> comnCodeSearch(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.comnCodeSearch(paramMap);
+	}
+	
+	@Override
+	public List<ManagementModel> comnCodeSearch2(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.comnCodeSearch2(paramMap);
+	}
+	
+	@Override
+	public List<ManagementModel> comnCodeSearch3(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.comnCodeSearch3(paramMap);
+	}
 
 	@Override
 	public List<ManagementModel> getCodeList(Map<String, Object> paramMap) throws Exception {
@@ -209,6 +227,12 @@ public class ManagementServiceImpl implements ManagementService {
 		// TODO Auto-generated method stub
 		return managementDao.comCodeDelete(paramMap);
 	}
+	
+	@Override
+	public int comDetailCodeDelete(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.comDetailCodeDelete(paramMap);
+	}
 
 	@Override
 	public List<Map<String, Object>> orderComSelectItem(Map<String, Object> paramMap) {
@@ -219,6 +243,42 @@ public class ManagementServiceImpl implements ManagementService {
 	public void newItemSave(Map<String, Object> paramMap) {
 		// TODO Auto-generated method stub
 		managementDao.newItemSave(paramMap);
+	}
+	
+	@Override
+	public List<ManagementModel> getProductList(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.getProductList(paramMap);
+	}
+	
+	@Override
+	public List<ManagementModel> getDetailProductList(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.getProductList(paramMap);
+	}
+	
+	@Override
+	public int productCnt(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.productCnt(paramMap);
+	}
+	
+	@Override
+	public List<ManagementModel> productSearch(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.productSearch(paramMap);
+	}
+	
+	@Override
+	public int productRegist(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.productRegist(paramMap);
+	}
+	
+	@Override
+	public int productDelete(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.productDelete(paramMap);
 	}
 
 //	@Override

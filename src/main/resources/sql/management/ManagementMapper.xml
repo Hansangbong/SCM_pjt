@@ -457,21 +457,76 @@
 				update_id, 
 				update_date
 			) values (
+				#{detail_code},
 				#{group_code},
-				#{group_name},
+				#{detail_name},
 				#{use_yn},
-				NOW(),
+				#{loginId},
 				NOW(),
 				#{loginId},
-				#{loginId}
+				NOW()
 			)
 	</insert>
+	
+	<delete id="comDetailCodeDelete">
+	/* kr.happyjob.study.management.dao.ManagementDao.comDetailCodeDelete */
+		DELETE FROM tb_detail_code
+		WHERE detail_code = #{detail_code}
+	</delete>
 	
 	<delete id="comCodeDelete">
 	/* kr.happyjob.study.management.dao.ManagementDao.comCodeDelete */
 		DELETE FROM tb_group_code
 		WHERE group_code = #{group_code}
 	</delete>
+	
+	<select id="comnCodeSearch" resultType="kr.happyjob.study.management.model.ManagementModel">
+	/* kr.happyjob.study.management.dao.ManagementDao.comnCodeSearch */
+		SELECT	tb_group_code.group_code ,    
+				tb_group_code.group_name ,
+				tb_group_code.use_yn ,
+				tb_group_code.reg_date
+		FROM tb_group_code
+		<where>
+		<if test="searchGroupCode != null and !''.equals(searchGroupCode)">
+            AND (group_code LIKE CONCAT('%', #{searchGroupCode}, '%'))
+		</if>
+		</where>
+	</select>
+	
+	
+	
+	<select id="comnCodeSearch2" resultType="kr.happyjob.study.management.model.ManagementModel">
+	/* kr.happyjob.study.management.dao.ManagementDao.comnCodeSearch2 */
+		SELECT	tb_group_code.group_code ,    
+				tb_group_code.group_name ,
+				tb_group_code.use_yn ,
+				tb_group_code.reg_date
+		FROM tb_group_code
+		JOIN tb_detail_code ON tb_detail_code.group_code = tb_group_code.group_code
+		<where>
+		<if test="searchDetailCode != null and !''.equals(searchDetailCode)">
+            AND (detail_code LIKE CONCAT('%', #{searchDetailCode}, '%'))
+		</if>
+		</where>
+	</select>
+	
+	<select id="comnCodeSearch3" resultType="kr.happyjob.study.management.model.ManagementModel">
+	/* kr.happyjob.study.management.dao.ManagementDao.comnCodeSearch3 */
+		SELECT	tb_group_code.group_code ,    
+				tb_group_code.group_name ,
+				tb_group_code.use_yn ,
+				tb_group_code.reg_date
+		FROM tb_group_code
+		JOIN tb_detail_code ON tb_detail_code.group_code = tb_group_code.group_code
+		<where>
+		<if test="searchDetailName != null and !''.equals(searchDetailName)">
+            AND (detail_name LIKE CONCAT('%', #{searchDetailName}, '%'))
+		</if>
+		</where>
+	</select>
+	
+	
 
 	<select id="orderComponyDetail" resultType="map">
 	
@@ -509,5 +564,81 @@
 		VALUES (#{company_seq}, #{item_code})
 		
 	</insert>
+	
+	<select id="getProductList" resultType="kr.happyjob.study.management.model.ManagementModel">
+	/* kr.happyjob.study.management.dao.ManagementDao.getProductList */
+		SELECT	item_name, 
+				item_code, 
+				manufac, 
+				provide_value,
+				product_detail,
+				img_path
+		FROM tb_item_info
+		LIMIT #{startSeq}, #{pageSize}
+	</select>
+	
+		<select id="productCnt" resultType="int">
+	/* kr.happyjob.study.management.dao.ManagementDao.productCnt */
+		SELECT 
+			count(*) 
+		FROM tb_item_info
+	</select>
+	
+	<select id="productSearch" resultType="kr.happyjob.study.management.model.ManagementModel">
+	/* kr.happyjob.study.management.dao.ManagementDao.productSearch */
+		SELECT	item_name, 
+				item_code, 
+				manufac, 
+				provide_value
+		FROM tb_item_info
+		<where>
+		<if test="searchItemName != null and !''.equals(searchItemName)">
+            AND (item_name LIKE CONCAT('%', #{searchItemName}, '%'))
+		</if>
+		<if test="searchItemCode != null and !''.equals(searchItemCode)">
+            AND (item_code LIKE CONCAT('%', #{searchItemCode}, '%'))
+		</if>
+		<if test="searchManufac != null and !''.equals(searchManufac)">
+            AND (manufac LIKE CONCAT('%', #{searchManufac}, '%'))
+		</if>
+		</where>
+		LIMIT #{startSeq}, #{pageSize}
+	</select>
+	
+	<select id="getDetailProductList" resultType="kr.happyjob.study.management.model.ManagementModel">
+	/* kr.happyjob.study.management.dao.ManagementDao.getDetailProductList */
+		SELECT	item_name, 
+				item_code, 
+				manufac, 
+				provide_value,
+				product_detail,
+				img_path
+		FROM tb_item_info
+		WHERE item_code = #{item_code}
+	</select>
+	
+	<insert id="productRegist">
+	/* kr.happyjob.study.management.dao.ManagementDao.productRegist */
+		insert into tb_item_info
+			( 
+				item_code,
+				item_name,
+				manufac,
+				provide_value,
+				product_detail
+			) values (
+				#{product_code },
+				#{product_name },
+				#{manufac },
+				#{product_value },
+				#{product_detail }
+			)
+	</insert>
+	
+	<delete id="productDelete">
+	/* kr.happyjob.study.management.dao.ManagementDao.productDelete */
+		DELETE FROM tb_item_info
+		WHERE item_code = #{product_code}
+	</delete>
 
 </mapper>

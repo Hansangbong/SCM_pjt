@@ -39,6 +39,12 @@ public interface ManagementDao {
 	public List<ManagementModel> supplySearch(Map<String, Object> paramMap) throws Exception;
 	
 	public List<ManagementModel> supplySearch2(Map<String, Object> paramMap) throws Exception;
+	
+	public List<ManagementModel> comnCodeSearch(Map<String, Object> paramMap) throws Exception;
+	
+	public List<ManagementModel> comnCodeSearch2(Map<String, Object> paramMap) throws Exception;
+	
+	public List<ManagementModel> comnCodeSearch3(Map<String, Object> paramMap) throws Exception;
 
 	public List<Map<String, Object>> warehouseList(Map<String, Object> paramMap);
 
@@ -60,17 +66,31 @@ public interface ManagementDao {
 	
 	public int comDetailCodeAdjust(Map<String, Object> paramMap) throws Exception;
 	
-	public int comCodeRegist(Map<String, Object> paramMap) throws Exception;
+	public int productRegist(Map<String, Object> paramMap) throws Exception;
 	
 	public int comDetailCodeRegist(Map<String, Object> paramMap) throws Exception;
 	
 	public int comCodeDelete(Map<String, Object> paramMap) throws Exception;
+	
+	public int comDetailCodeDelete(Map<String, Object> paramMap) throws Exception;
 
 	public List<Map<String, Object>> orderComponyDetail(Map<String, Object> paramMap);
 
 	public List<Map<String, Object>> orderComSelectItem(Map<String, Object> paramMap);
 
 	public void newItemSave(Map<String, Object> paramMap);
+	
+	public List<ManagementModel> getProductList(Map<String, Object> paramMap) throws Exception;
+	
+	public List<ManagementModel> getDetailProductList(Map<String, Object> paramMap) throws Exception;
+	
+	public List<ManagementModel> productSearch(Map<String, Object> paramMap) throws Exception;
+	
+	public int productCnt(Map<String, Object> paramMap) throws Exception;
+	
+	public int comCodeRegist(Map<String, Object> paramMap) throws Exception;
+	
+	public int productDelete(Map<String, Object> paramMap) throws Exception;
 
 //	public int noticeSave(Map<String, Object> paramMap) throws Exception;
 //

@@ -27,14 +27,34 @@ public class ManagementModel {
 	private String addr_detail;
 	private String item_code;
 	private String item_price;
+	private String provide_value;
+	private String manufac;
 	private String obtain_count;
 	private String item_name;
+	private String img_path;
+	private String product_detail;
 	private String group_code;
 	private String detail_code;
 	private String group_name;
 	private String detail_name;
 	private String use_yn;
 	private String reg_date;
+	
+	public String getProduct_detail() {
+		return product_detail;
+	}
+	
+	public String getImg_path() {
+		return img_path;
+	}
+	
+	public String getProvide_value() {
+		return provide_value;
+	}
+	
+	public String getManufac() {
+		return manufac;
+	}
 	
 	public String getDetail_code() {
 		return detail_code;

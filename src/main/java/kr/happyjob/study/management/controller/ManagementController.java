@@ -631,5 +631,177 @@ public class ManagementController {
 
 		return resultMap;
 	}
+	
+	@RequestMapping("comDetailCodeDelete.do")
+	@ResponseBody
+	public Map<String, Object> comDetailCodeDelete(@RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".comDetailCodeDelete");
+		logger.info("   - paramMap : " + paramMap);
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		//String loginId = (String) session.getAttribute("loginId");
+		//paramMap.put("loginId", loginId);
+		int result = 0;
+		String returnMsg = "";
+
+		result = managementService.comDetailCodeDelete(paramMap);
+
+		if (result > 0) {
+			returnMsg = "success";
+		} else {
+			returnMsg = "fail";
+		}
+
+		resultMap.put("result", returnMsg);
+
+		return resultMap;
+	}
+	
+	@RequestMapping("comnCodeSearch.do")
+	public String comnCodeSearch(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".comnCodeSearch!!");
+		logger.info("   - paramMap : " + paramMap);
+		
+		int cpage = Integer.valueOf((String) paramMap.get("currentPage"));
+		int pageSize = Integer.valueOf((String) paramMap.get("pageSize"));
+		int condition = Integer.valueOf((String) paramMap.get("condition"));
+
+		int startSeq = (cpage - 1) * pageSize;
+
+		paramMap.put("startSeq", startSeq);
+		paramMap.put("pageSize", pageSize);
+		
+		List<ManagementModel> codeList;
+	
+		if(condition == 0){
+			codeList = managementService.comnCodeSearch(paramMap);
+		}
+		else if(condition == 1){
+			codeList = managementService.comnCodeSearch2(paramMap);
+		}
+		else {
+			codeList = managementService.comnCodeSearch3(paramMap);
+		}
+		
+		int codeCnt = managementService.codeCnt(paramMap);
+		
+
+		model.addAttribute("codeList", codeList);
+		model.addAttribute("codeCnt", codeCnt);
+
+		return "management/codeView";
+	}
+	
+	@RequestMapping("getProductList.do")
+	public String getProductList(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".getProductList!!!");
+		logger.info("   - paramMap : " + paramMap);
+		
+		int cpage = Integer.valueOf((String) paramMap.get("currentPage"));
+		int pageSize = Integer.valueOf((String) paramMap.get("pageSize"));
+
+		int startSeq = (cpage - 1) * pageSize;
+
+		paramMap.put("startSeq", startSeq);
+		paramMap.put("pageSize", pageSize);
+
+		List<ManagementModel> productList = managementService.getProductList(paramMap);
+		int productCnt = managementService.productCnt(paramMap);
+
+		model.addAttribute("productList", productList);
+		model.addAttribute("productCnt", productCnt);
+
+		return "management/productList";
+	}
+	
+	@RequestMapping("getDetailProductList.do")
+	public String getDetailProductList(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".getDetailProductList!!!");
+		logger.info("   - paramMap : " + paramMap);
+
+		List<ManagementModel> productList = managementService.getDetailProductList(paramMap);
+
+		model.addAttribute("productList", productList);
+
+		return "management/getDetailProductList";
+	}
+	
+	@RequestMapping("productSearch.do")
+	public String productSearch(Model model, @RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".productSearch!!");
+		logger.info("   - paramMap : " + paramMap);
+		
+		int cpage = Integer.valueOf((String) paramMap.get("currentPage"));
+		int pageSize = Integer.valueOf((String) paramMap.get("pageSize"));
+		int condition = Integer.valueOf((String) paramMap.get("condition"));
+
+		int startSeq = (cpage - 1) * pageSize;
+
+		paramMap.put("startSeq", startSeq);
+		paramMap.put("pageSize", pageSize);
+	
+
+		List<ManagementModel> productList = managementService.productSearch(paramMap);
+		int productCnt = managementService.productCnt(paramMap);
+		
+
+		model.addAttribute("productList", productList);
+		model.addAttribute("productCnt", productCnt);
+
+		return "management/productList";
+	}
+	
+	@RequestMapping("productRegist.do")
+	@ResponseBody
+	public Map<String, Object> productRegist(@RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".productRegist");
+		logger.info("   - paramMap : " + paramMap);
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		int result = 0;
+		String returnMsg = "";
+
+		result = managementService.productRegist(paramMap);
+
+		if (result > 0) {
+			returnMsg = "success";
+		} else {
+			returnMsg = "fail";
+		}
+
+		resultMap.put("result", returnMsg);
+
+		return resultMap;
+	}
+	
+	@RequestMapping("productDelete.do")
+	@ResponseBody
+	public Map<String, Object> productDelete(@RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".productDelete");
+		logger.info("   - paramMap : " + paramMap);
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		int result = 0;
+		String returnMsg = "";
+
+		result = managementService.productDelete(paramMap);
+
+		if (result > 0) {
+			returnMsg = "success";
+		} else {
+			returnMsg = "fail";
+		}
+
+		resultMap.put("result", returnMsg);
+
+		return resultMap;
+	}
 
 }
