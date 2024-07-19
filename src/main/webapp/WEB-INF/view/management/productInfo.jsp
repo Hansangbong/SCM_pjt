@@ -7,6 +7,7 @@
 <title>제품 정보 관리</title>
 
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
+<jsp:include page="/WEB-INF/view/common/header.jsp"></jsp:include>
 </head>
 
 <body>
@@ -74,21 +75,43 @@
 						<a class="btnType red" name="newRegister"  id="newRegister"><span>제품 등록</span></a>
 					</div> <!--// content -->
 					
-					<div id="myModal" class="modal">
+					
+					<div id="myModal" class="modal" style="width: max;" >
 						<div class="modal-content">
-            				<span class="close">&times;</span>
-            				<img id="productImg" src="" alt="제품 이미지" style="width:100%;max-width:300px">
-            				제품 번호 
-							<input type="text" id="modalProductCode" style="height: 25px; margin-right: 10px;"/><br>
-							제품 명
-							<input type="text" id="modalProductName" style="height: 25px; margin-right: 10px;"/><br>
-							제조사
-							<input type="text" id="modalManufac" style="height: 25px; margin-right: 10px;"/><br>
-							제품 가격
-							<input type="text" id="modalValue" style="height: 25px; margin-right: 50px;" /><br>
-							상세 정보
-							<textarea id="modaldetail" style="height: 25px; margin-right: 50px;" ></textarea><br>
-							
+							<table class="row">
+								<caption>caption</caption>
+								<colgroup>
+									<col width="120px">
+									<col width="*">
+									<col width="120px">
+									<col width="*">
+								</colgroup>
+								<span class="close">&times;</span>
+								<tbody>
+								
+									<tr id="imageTag">
+            							<th>이미지</th>
+            							<td colspan="3"><img id="productImg" src="" alt="제품 이미지" style="width:100%;max-width:300px"></td>
+            						</tr>
+            						<tr>
+            							<th scope="row">제품 번호</th> 
+										<td ><input type="text" id="modalProductCode" style="height: 25px; margin-right: 10px;" class="inputTxt p100"/></td>
+										<th scope="row">제품 명</th>
+										<td ><input type="text" id="modalProductName" style="height: 25px; margin-right: 10px;" class="inputTxt p100"/><br></td>
+									</tr>
+									<tr>
+										<th scope="row">제조사</th>
+										<td ><input type="text" id="modalManufac" style="height: 25px; margin-right: 10px;" class="inputTxt p100"/><br></td>
+										<th scope="row">제품 가격</th>
+										<td ><input type="text" id="modalValue" style="height: 25px; margin-right: 50px;" class="inputTxt p100"/><br></td>
+									</tr>
+									<tr>
+										<th scope="row" >상세 정보</th>
+										<td colspan="5"><textarea id="modaldetail" style="height: 25px; margin-right: 50px;" class="inputTxt p100" colspan="2" cols="40" rows="5"></textarea><br></td>
+										
+									</tr>
+								</tbody>
+            				</table>	
 							<br>
 							<input type="hidden" id="modalProductCodeOrigin" >
 							<input type="hidden" id="modalProductNameOrigin" >
@@ -100,8 +123,11 @@
                 				<button class="btn1 btn-primary">삭제</button>
                 				<button class="btn btn-primary">취소</button>						
             				</div>
+            				
+            			
         				</div>
 					</div>
+					
 
 					<h3 class="hidden">풋터 영역</h3>
 						<jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>
@@ -129,6 +155,7 @@ $(document).ready(function() {
     	$('#modalValue').val('');
     	$('#modaldetail').val('');
     	document.getElementById('productImg').src = '';
+    	$("#imageTag").hide();
     });
     
     
@@ -284,7 +311,7 @@ function productDelete(itemCode){ // 삭제 버튼 클릭 시 발동
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
+            overflow: hiddent;
             background-color: rgb(0,0,0);
             background-color: rgba(0,0,0,0.4);
         }

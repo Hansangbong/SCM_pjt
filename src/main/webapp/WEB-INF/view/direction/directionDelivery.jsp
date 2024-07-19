@@ -10,12 +10,61 @@
 
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <script>
-//row클릭시에 배송지시서 상세보기 모달이 나오도록 해야됨
+
+//row 클릭 시 배송지시서 상세보기 모달이 나오도록 설정
+/*
 $(document).ready(function(){
-    $("#openDeliveyDetailPopbtn").click(function(){
+    $(".clickable-row").click(function(){
+        var rowId = $(this).attr('id');
+        var orderNumber = $(this).find('.order-number').text();
+        var orderDate = $(this).find('.order-date').text();
+        var companyName = $(this).find('.company-name').text();
+        var orderQuantity = $(this).find('.order-quantity').text();
+
+        $('#modalOrderNumber').val(orderNumber);
+        $('#modalOrderDate').val(orderDate);
+        $('#modalCompanyName').val(companyName);
+        $('#modalOrderQuantity').val(orderQuantity);
+
         $("#deliveryDetailPop").modal('show');
     });
+    // 닫기 버튼 기능
+    $("#btnClose").click(function(e){
+        e.preventDefault();
+        $("#deliveryDetailPop").modal('hide');
+    });
 });
+*/
+
+$(function() {
+	returnList();
+	searchBtnEvent();
+})
+
+function searchBtnEvent() {
+	$("#searchBtn").click(function(event){
+		event.preventDefault();
+		returnList();
+	})
+}
+
+function returnList() {
+
+	let param = {
+			searchTitle : $("#searchTitle").val(),
+			searchStDate : $("#searchStDate").val(),
+			searchEdDate : $("#searchEdDate").val()
+	}
+
+	var callBackFunction = function(res) {
+
+		$("#directionDeliveryList").empty().append(res);
+
+	}
+
+	callAjax("/direction/directionDeliveryList.do", "post", "text", false, param, callBackFunction);
+}
+
 
 </script>
 
@@ -47,53 +96,52 @@ $(document).ready(function(){
 							<a href="#" class="btn_set refresh">새로고침</a>
 						</p>
 						
-					<p class="conTitle">
-						<span>배송지시서</span> 
-						<span class="fr">					
-                          <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
-						  <a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
-						</span>
-					</p> 
-						
+						<p class="conTitle">
+							<span>배송지시서</span> 
+							<span class="fr"> 배송담당자
+								<input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
+								기간
+								<input type="date" id="searchStDate" name="searchStDate" style="height: 25px; margin-right: 10px;"/> 
+								~ 
+								<input type="date" id="searchEdDate" name="searchEdDate" style="height: 25px; margin-right: 10px;"/>
+								<a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
+							</span>
+						</p> 
+					
+					<!-- 여기를 없앨까?? 배송지시서 클릭시 모달 나오도록 
+					<span class="fr">					
+                        <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
+						<a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
+					</span> 
+					 -->	
 							<Strong class="btn_nav bold">배송 지시서</Strong> 
 						
 						<div class="divNoticeList">
 							<table class="col">
 								<caption>caption</caption>
 		                            <colgroup>
+						                   <col width="80px">
+						                   <col width="100px">
+						                   <col width="60px">
+						                   <col width="60px">
 						                   <col width="50px">
-						                   <col width="200px">
-						                    <col width="60px">
+						                   <col width="50px">
 						                   <col width="50px">
 					                 </colgroup>
 								<thead>
 									<tr>
-							              <th scope="col">주문번호</th>
-							              <th scope="col">주문일자</th>
-							              <th scope="col">고객기업명</th>
-							              <th scope="col">주문개수</th>
+							              <th scope="col">배송번호</th>
+							              <th scope="col">배송시작일</th>
+							              <th scope="col">배송담당자 </th>
+							              <th scope="col">출발지 </th>
+							              <th scope="col">목적지 </th>
+							              <th scope="col">배송개수</th>
+							              <th scope="col">배송상태</th>
 									</tr>
-
 								</thead>
-								<tbody id="noticeList">
-									<tr>
-											<td>더미 111010</td>
-											<td>더미 2024-07-01</td>
-											<td>더미 한화</td>
-											<td>더미 100(개)</td>
-									</tr>
-									<tr>
-											<td>더미2 211101</td>
-											<td>더미2 2024-07-04</td>
-											<td>더미2 카카오</td>
-											<td>더미2 180(개)</td>
-									</tr>
+								<tbody id="directionDeliveryList" class="clickable-row">
 								</tbody>
 							</table>
-							
-						<span class="fr">					
- 						  <a class="btnType red p-2" href="" name="returnbtn"  id="returnBtn"><span>반품승인요청</span></a>
-						</span>
 							
 							<!-- 페이징 처리  -->
 							<div class="paging_area" id="pagingNavi">
@@ -121,31 +169,28 @@ $(document).ready(function(){
 			</dt>
 			<dd class="content">
 				<!-- s : 여기에 내용입력 -->
-				<table class="row">
-					<caption>caption</caption>
-
-					<tbody>
-						<tr>
-							<th scope="row">작성자 <span class="font_red">*</span></th>
-							<td><input type="text" class="inputTxt p100" name="loginId" id="loginId" readonly="readonly"/></td>
-							<!-- <th scope="row">작성일<span class="font_red">*</span></th>
-							<td><input type="text" class="inputTxt p100" name="write_date" id="write_date" /></td> -->
-						</tr>
-						<tr>
-							<th scope="row">제목 <span class="font_red">*</span></th>
-							<td colspan="3"><input type="text" class="inputTxt p100"
-								name="noticeTitle" id="noticeTitle" /></td>
-						</tr>
-						<tr>
-							<th scope="row">내용</th>
-							<td colspan="3">
-								<textarea class="inputTxt p100" name="noticeContent" id="noticeContent">
-								</textarea>
-							</td>
-						</tr>
-						
-					</tbody>
-				</table>
+                    <table class="row">
+                        <caption>caption</caption>
+                        <tbody>
+                            <tr>
+                                <th scope="row">주문번호</th>
+                                <td><input type="text" class="inputTxt p100" id="modalOrderNumber" readonly="readonly"/></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">주문일자</th>
+                                <td><input type="text" class="inputTxt p100" id="modalOrderDate" readonly="readonly"/></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">고객기업명</th>
+                                <td><input type="text" class="inputTxt p100" id="modalCompanyName" readonly="readonly"/></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">주문개수</th>
+                                <td><input type="text" class="inputTxt p100" id="modalOrderQuantity" readonly="readonly"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- e : 여기에 내용입력 -->
 
 				<!-- e : 여기에 내용입력 -->
 

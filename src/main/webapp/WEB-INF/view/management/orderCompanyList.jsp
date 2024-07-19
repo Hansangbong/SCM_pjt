@@ -5,8 +5,7 @@
 	<c:forEach items="${list}" var="list" varStatus="i">
 		<tr class="storageDetail">
 			<td>${list.company_seq}</td>		
-			<td><a href="javascript:orderComponyDetail(${list.company_seq}), orderComSelectItem(${list.company_seq});">${list.company_name}</a></td>							
-			<td><a href="javascript:orderComponyDelete(${list.company_seq});"><button>삭제</button></a></td>							
+			<td><a href="javascript:orderComponyDetail(${list.company_seq}), orderComSelectItem(${list.company_seq});">${list.company_name}</a></td>				
 		</tr>
 	</c:forEach>
 

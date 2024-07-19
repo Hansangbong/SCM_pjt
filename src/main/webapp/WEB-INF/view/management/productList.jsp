@@ -17,7 +17,7 @@
 			<c:set var="nRow" value="${pageSize*(currentPage-1)}" /> 
             <c:forEach var="list" items="${productList}">
                 <tr>
-                    <td class="itemCode" data-productcode="${list.item_code}" data-imagpath="${list.img_path}" >${list.item_code}</td>
+                    <td class="itemCode" data-productcode="${list.item_code}" data-imagpath="${list.img_path}" ><a style="cursor:pointer;">${list.item_code}</a></td>
                     <td class="itemName" data-productname="${list.item_name}" data-itemdetail="${list.product_detail}" >${list.item_name}</td>
                     <td class="manufac" data-productmanufac="${list.manufac}" >${list.manufac}</td>
                     <td class="itemValue" data-productvalue="${list.provide_value}" >${list.provide_value}</td>
@@ -52,7 +52,10 @@ $(document).ready(function() {
 			$("#productImg").val(productPath);
 			document.getElementById('productImg').src = productPath;
 			
+			$(".btn1").show();
+			$("#imageTag").show();
 			$('#myModal').show();
+			
 		 
 	});
     

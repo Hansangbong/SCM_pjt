@@ -17,7 +17,7 @@
 			<c:set var="nRow" value="${pageSize*(currentPage-1)}" /> 
             <c:forEach var="list" items="${supply}">
                 <tr>
-                    <td class="custDetailView" data-custid2="${list.cust_id}">${list.cust_name}</td>
+                    <td class="custDetailView" data-custid2="${list.cust_id}"><a style="cursor:pointer;">${list.cust_name}</a></td>
                     <td>${list.loginID}</td>
                     <td>${list.password}</td>
                     <td>${list.cust_person}</td>
@@ -35,6 +35,7 @@ $(document).ready(function() {
 		
 		var callBackFunction = function(response){
 	    	$("#custProduct").empty().append(response);
+	    	$('.test').show();
 	    }
 	      
 		

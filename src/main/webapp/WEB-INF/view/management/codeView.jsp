@@ -18,7 +18,7 @@
             <c:forEach var="list" items="${codeList}"  varStatus="status">
                 <tr>
                     <td id="codeDetailView" >${status.index + 1}</td>
-                    <td class="groupCode" data-groupcode="${list.group_code}">${list.group_code}</td>
+                    <td class="groupCode" data-groupcode="${list.group_code}"><a style="cursor:pointer;">${list.group_code}</a></td>
                     <td class="groupName" data-groupname="${list.group_name}">${list.group_name}</td>
                     <td class="groupYn" data-groupyn="${list.use_yn}">${list.use_yn}</td>
                     <td>${list.reg_date}</td>

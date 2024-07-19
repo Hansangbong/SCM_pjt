@@ -44,8 +44,6 @@ public interface ManagementService {
 
 	public int newCompanySave(Map<String, Object> paramMap);
 
-	public void orderComponyDelete(Map<String, Object> paramMap);
-	
 	public List<ManagementModel> userSearch(Map<String, Object> paramMap) throws Exception;
 	
 	public List<ManagementModel> supplySearch(Map<String, Object> paramMap)throws Exception;
@@ -67,6 +65,7 @@ public interface ManagementService {
 	public List<Map<String, Object>> orderComSelectItem(Map<String, Object> paramMap);
 
 	public void newItemSave(Map<String, Object> paramMap);
+
 	
 	public int comCodeAdjust(Map<String, Object> paramMap) throws Exception;
 	

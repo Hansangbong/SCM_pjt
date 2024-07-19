@@ -17,9 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
-import kr.happyjob.study.management.service.ManagementService;
 import kr.happyjob.study.management.model.ManagementModel;
+import kr.happyjob.study.management.service.ManagementService;
 
 @Controller
 @RequestMapping("/management/")
@@ -403,19 +402,7 @@ public class ManagementController {
 		
 		return "management/orderCompany";
 	}
-	@RequestMapping("orderComponyDelete.do")
-	public String orderComponyDelete(Model model, @RequestParam Map<String, Object> paramMap){
-		
-		logger.info("+ Start " + className + ".orderComponyDelete");
-		logger.info("   - paramMap : " + paramMap);
-		
-		
-		managementService.orderComponyDelete(paramMap);
-		
-		
-		
-		return "management/orderCompany";
-	}
+
 	@RequestMapping("orderComponyDetail.do")
 	public String orderComponyDetail(Model model, @RequestParam Map<String, Object> paramMap){
 		

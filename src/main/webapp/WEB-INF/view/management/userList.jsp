@@ -19,18 +19,38 @@
                 <tr>
                 	<c:choose>
                 		<c:when test="${list.user_type eq 'B'}" >
-                			<td class="detailView" data-loginid="${list.loginID}" data-usercode="${list.user_type}"  >기업 고객</td> <!-- 사용자테이블에 있는 고객데이터 -->
+                			<td class="detailView" data-loginid="${list.loginID}" data-usercode="${list.user_type}"  ><a style="cursor:pointer;">기업 고객</a></td> <!-- 사용자테이블에 있는 고객데이터 -->
                 		</c:when>
                 		<c:when test="${list.cust_person != null}" >
-                			<td class="detailView" data-custid="${list.loginID}"  >기업 고객</td> <!-- 기업테이블에 있는 고객데이터 -->
+                			<td class="detailView" data-custid="${list.loginID}"  ><a style="cursor:pointer;">기업 고객</a></td> <!-- 기업테이블에 있는 고객데이터 -->
                 		</c:when>
                 	</c:choose>
                 	<c:if  test="${list.user_type != 'B' && list.cust_person eq null  }" >
-                		<td class="detailView" data-loginid="${list.loginID}">내부 직원</td>
+                		<td class="detailView" data-loginid="${list.loginID}"><a style="cursor:pointer;">내부 직원</a></td>
                 	</c:if>
-                	
                     <td>${list.name}</td>
-                    <td>${list.job_code}</td>
+                    
+                    <c:choose>
+                    	<c:when test="${list.user_type eq 'A' }" >
+                    		<td>임원</td>
+                    	</c:when>
+                    	<c:when test="${list.user_type eq 'B' }" >
+                    		<td>고객</td>
+                    	</c:when>
+                    	<c:when test="${list.user_type eq 'C' }" >
+                    		<td>SCM 관리자</td>
+                    	</c:when>
+                    	<c:when test="${list.user_type eq 'D' }" >
+                    		<td>배송 담당자</td>
+                    	</c:when>
+                    	<c:when test="${list.user_type eq 'E' }" >
+                    		<td>구매 담당자</td>
+                    	</c:when>
+                    	<c:when test="${list.user_type != 'A' && list.user_type != 'B' && list.user_type != 'C' && list.user_type != 'D' && list.user_type != 'E'  }" >
+                    		<td>기타</td>
+                    	</c:when>
+                    </c:choose>
+                    
                     <td>${list.cust_person}</td>
                     <td>${list.phone}</td>
                     

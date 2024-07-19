@@ -11,6 +11,34 @@
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 <script>
 
+$(function() {
+	returnList();
+	searchBtnEvent();
+})
+
+function searchBtnEvent() {
+	$("#searchBtn").click(function(event){
+		event.preventDefault();
+		returnList();
+	})
+}
+
+function returnList() {
+
+	let param = {
+			searchTitle : $("#searchTitle").val(),
+			searchStDate : $("#searchStDate").val(),
+			searchEdDate : $("#searchEdDate").val()
+	}
+
+	var callBackFunction = function(res) {
+
+		$("#directionReturnList").empty().append(res);
+
+	}
+
+	callAjax("/direction/ajax_returnList.do", "post", "text", false, param, callBackFunction);
+}
 
 </script>
 
@@ -42,52 +70,48 @@
 							<a href="#" class="btn_set refresh">새로고침</a>
 						</p>
 						
-					<p class="conTitle">
-						<span>반품지시서</span> 
-						<span class="fr">					
-                          <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
-						  <a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
-						</span>
-					</p> 
+						<p class="conTitle">
+						    <span>반품지시서</span> 
+						    <span class="fr"> 
+						    	<!-- 
+						        <select name="" id="searchType">
+			                        <option value="item_name">제품명</option>
+			                        <option value="equipment_type">장비</option>
+			                        <option value="manufac">제조사</option>
+			                     </select>
+			                      -->
+						        <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
+						        기간
+						        <input type="date" id="searchStDate" name="searchStDate" style="height: 25px; margin-right: 10px;"/> 
+						        ~ 
+						        <input type="date" id="searchEdDate" name="searchEdDate" style="height: 25px; margin-right: 10px;"/>
+						        <a class="btnType red" href="" name="searchbtn" id="searchBtn"><span>검색</span></a>
+						    </span>
+						</p>
+
 						
-							<Strong class="btn_nav bold">배송 지시서</Strong> 
+							<Strong class="btn_nav bold">반품 지시서</Strong> 
 						
 						<div class="divNoticeList">
 							<table class="col">
 								<caption>caption</caption>
 		                            <colgroup>
 						                   <col width="50px">
-						                   <col width="200px">
+						                   <col width="50px">
 						                   <col width="60px">
 						                   <col width="50px">
 						                   <col width="50px">
 					                 </colgroup>
 								<thead>
 									<tr>
-							              <th scope="col">주문일자</th>
+							              <th scope="col">반품신청일자</th>
 							              <th scope="col">제품명</th>
 							              <th scope="col">반품 개수</th>
 							              <th scope="col">금액</th>
-							              <th scope="col">임원승인여부</th>
+							              <th scope="col">반품상태?? return_state 임원승인여부</th>
 									</tr>
-
 								</thead>
-								<tbody id="noticeList">
-									<tr>
-											<td>더미 111010</td>
-											<td>더미 2024-07-01</td>
-											<td>더미 한화</td>
-											<td>더미 100(개)</td>
-											<td>Y</td>
-									</tr>
-									<tr>
-											<td>더미2 211101</td>
-											<td>더미2 2024-07-04</td>
-											<td>더미2 카카오</td>
-											<td>더미2 180(개)</td>
-											<td>N</td>
-									</tr>
-								</tbody>
+								<tbody id="directionReturnList"></tbody>
 							</table>
 							
 							<!-- 페이징 처리  -->

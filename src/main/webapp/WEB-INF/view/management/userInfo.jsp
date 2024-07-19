@@ -40,8 +40,6 @@
 						
 						<span class="fr">					
                           <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
-                          <input type="checkbox" name="xxx" value="yyy" unchecked>
-							삭제된 정보 표시
                           <a class="btnType red" name="searchbtn"  id="searchBtn"><span>검색</span></a>
                           
 						</span>
@@ -59,7 +57,7 @@
 					                 </colgroup>
 								<thead>
 									<tr>
-							              <th scope="col">구분1</th>
+							              <th scope="col">구분</th>
 							              <th scope="col">회사명/성명</th>
 							              <th scope="col">담당업무</th>
 							              <th scope="col">담당자명</th>
@@ -82,40 +80,54 @@
 								<option value="B">기업고객</option>
 								<option value="C">내부직원</option>
 							</select>
-							<span>아이디</span>
-							<input type="text" id="userId" name="userId" style="height: 25px; margin-right: 10px;"/>
-							비밀번호
-							<input type="text" id="passwd" name="passwd" style="height: 25px; margin-right: 10px;"/> 	
-							<br><span>      </span>
-							회사명
-							<input type="text" id="copName" name="copName" style="height: 25px; margin-right: 10px;"/>
-							담당자명
-							<input type="text" id="manager" name="manager" style="height: 25px; margin-right: 10px;"/>
-							<br>
-							연락처
-							<input type="text" id="phone" name="phon" style="height: 25px; margin-right: 10px;"/>
-							이메일
-							<input type="text" id="email" name="email" style="height: 25px; margin-right: 10px;"/>
-							<br>
-							직원명
-							<input type="text" id="clerk" name="clerk" style="height: 25px; margin-right: 10px;"/>
-							담당업무
-							<span>
-								<select id="jobCode">
-									<option value="A">SCM</option>
-									<option value="B">배송</option>
-									<option value="C">구매</option>
-									<option value="D">임원</option>
-								</select>
-							</span>  
-							<br>
-							우편번호
-							<input type="text" id="zipCode" name="zipCode" style="height: 25px; margin-right: 10px;"/><br>
-							주소
-							<input type="text" id="address" name="address" style="height: 25px; margin-right: 10px;"/><br>
-							상세주소
-							<input type="text" id="addressDetail" name="addressDetail" style="height: 25px; margin-right: 10px;"/>
 							
+							<table class="row">
+								<caption>caption</caption>
+								<colgroup>
+									<col width="120px">
+									<col width="*">
+									<col width="120px">
+									<col width="*">	
+								</colgroup>
+								<tbody>
+									<tr>
+										<th><span>아이디</span></th>
+										<td><input type="text" id="userId" name="userId" style="height: 25px; margin-right: 10px;"/></td>
+									
+									
+										<th>비밀번호</th>
+										<td><input type="text" id="passwd" name="passwd" style="height: 25px; margin-right: 10px;"/></td>
+							 	
+										<th>연락처</th>
+										<td><input type="text" id="phone" name="phon" style="height: 25px; margin-right: 10px;"/></td>
+									</tr>
+									<tr>
+										<th>이메일</th>
+										<td><input type="text" id="email" name="email" style="height: 25px; margin-right: 10px;"/></td>
+							
+										<th>직원명</th>
+										<td><input type="text" id="clerk" name="clerk" style="height: 25px; margin-right: 10px;"/></td>
+										<th>담당업무</th>
+										<td>
+											<select id="jobCode">
+												<option value="A">SCM</option>
+												<option value="B">배송</option>
+												<option value="C">구매</option>
+												<option value="D">임원</option>
+											</select>
+										</td>
+							
+									</tr>  
+									<tr>
+										<th>우편번호</th>
+										<td><input type="text" id="zipCode" name="zipCode" style="height: 25px; margin-right: 10px;"/><br></td>
+										<th>주소</th>
+										<td><input type="text" id="address" name="address" style="height: 25px; margin-right: 10px;"/><br></td>
+										<th>상세주소</th>
+										<td><input type="text" id="addressDetail" name="addressDetail" style="height: 25px; margin-right: 10px;"/></td>
+									</tr>
+								</tbody>
+							</table>
 							<a class="btnType red" href="" name="regist"  id="registBtn"><span>등록</span></a>
 							<a class="btnType red"  name="cancle"  id="cancleBtn"><span>취소</span></a>
 							
@@ -161,6 +173,14 @@ $(document).ready(function() {
     $("#searchBtn").click(function() {
     	detailSearch();
     })
+    
+   /* $("#type").click(function() {
+    	var select = $('#type').val();
+    	if(select == 'B'){
+    		$('#yourInputId').prop('disabled', true);
+    	}
+    });
+    */
     
 });
 

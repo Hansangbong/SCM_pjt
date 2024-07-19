@@ -10,7 +10,66 @@
 
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 
+ <script>
+	$(function(){
+		orderSearch();
+	})
+    
+	// 전역변수 => 페이징처리 할거라면..
+    var cpage = 1;
+    var pageSize = 10;
 
+		
+	//검색버튼을 눌렀을때
+	function orderSearch() {
+		$("#searchBtn").click(function(e){
+			e.preventDefault();
+			
+			//전역변수하면 X => 최신입력값을 가져와야하기때문에
+			var param = {
+						searchCompany : $("#searchCompany").val(),
+						searchStDate : $("#searchStDate").val(),
+						searchEdDate : $("#searchEdDate").val(),
+				};
+			
+			$.ajax({
+				url : "searchOrder",
+				method : "post",
+				dataType : "json",
+				data : JSON.stringify(param),
+			    contentType: "application/json; charset=utf-8",
+	            success: function(response) {
+	                console.log("AJAX 응답 데이터: ", response);
+	                alert("검색결과를 잘 불러왔습니다.");
+	                OrderResults(response.searchOrder);
+	            },
+	            error: function(xhr, status, error) {
+	                console.error("AJAX 요청 실패: ", error);
+	            }
+	        });
+		})
+	}
+	
+	
+	//검색조건에 맞게 불러와서 테이블만들어주기
+	function OrderResults(orderList) {
+	    var tableBody = $("#orderList");
+	    tableBody.empty();
+
+	    $.each(orderList, function(index, order) {
+	        var row = "<tr>"
+	            + "<td>" + order.item_code + "</td>"
+	            + "<td>" + order.item_name + "</td>"
+	            + "<td>" + order.order_company + "</td>"
+	            + "<td>" + order.order_date + "</td>"
+	            + "<td>" + order.order_count + "</td>"
+	            + "</tr>";
+	        tableBody.append(row);
+	    });
+	}
+            
+                
+</script>
 
 </head>
 <!-- 작업지시서 => 발주지시서 목록 -->
@@ -39,13 +98,29 @@
 							<a href="#" class="btn_set refresh">새로고침</a>
 						</p>
 						
-					<p class="conTitle">
-						<span>발주지시서</span> 
-						<span class="fr">					
-                          <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
-						  <a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
-						</span>
-					</p> 
+						<p class="conTitle">
+						    <span>발주지시서</span> 
+						    <span class="fr"> 
+						        <!-- 드롭다운 메뉴 추가 시작
+						        <div class="dropdown" style="display:inline-block; margin-right: 10px;">
+						            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="height: 25px;">
+						                기업선택
+						                <span class="caret"></span>
+						            </button>
+						            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+						                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">삼성</a></li>
+						                <li role="presentation"><a role="menuitem" tabindex="-1" href="#">네이버</a></li>
+						            </ul>
+						        </div>
+						        드롭다운 메뉴 추가 끝 -->
+						        <input type="text" id="searchCompany" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
+						        기간
+						        <input type="date" id="searchStDate" name="searchStDate" style="height: 25px; margin-right: 10px;"/> 
+						        ~ 
+						        <input type="date" id="searchEdDate" name="searchEdDate" style="height: 25px; margin-right: 10px;"/>
+						  		<a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
+						    </span>
+						</p>
 						
 							<Strong class="btn_nav bold">발주 지시서</Strong> 
 						
@@ -54,7 +129,7 @@
 								<caption>caption</caption>
 		                            <colgroup>
 						                   <col width="50px">
-						                   <col width="200px">
+						                   <col width="100px">
 						                    <col width="60px">
 						                   <col width="50px">
 						                   <col width="50px">
@@ -69,29 +144,22 @@
 									</tr>
 
 								</thead>
-								<tbody id="noticeList">
-									<tr>
-											<td>더미 1</td>
-											<td>더미 모니터</td>
-											<td>더미 LG</td>
-											<td>더미 2024-07-01</td>
-											<td>더미 100(개)</td>
-									</tr>
-									<tr>
-											<td>더미2 2</td>
-											<td>더미2 2024-07-03</td>
-											<td>더미2 삼송</td>
-											<td>더미2 2024-06-31</td>
-											<td>더미2 180(개)</td>
-									</tr>
+								<tbody id="orderList" >
+								<c:if test="${not empty orderList}">
+									<c:forEach items="${orderList}" var="orderList">
+										<tr>
+												<td>${orderList.item_code}</td>
+												<td>${orderList.item_name}</td>
+												<td>${orderList.order_company}</td>
+												<td>${orderList.order_date}</td>
+												<td>${orderList.order_count}</td>
+										</tr>
+									</c:forEach>
+								</c:if>
 								</tbody>
 							</table>
-							
-						<span class="fr">					
- 						  <a class="btnType red p-2" href="" name="returnbtn"  id="returnBtn"><span>반품승인요청</span></a>
-						</span>
-							
-							<!-- 페이징 처리  -->
+
+														<!-- 페이징 처리  -->
 							<div class="paging_area" id="pagingNavi">
 							</div>
 											

@@ -92,6 +92,7 @@ public interface ManagementDao {
 	
 	public int productDelete(Map<String, Object> paramMap) throws Exception;
 
+
 //	public int noticeSave(Map<String, Object> paramMap) throws Exception;
 //
 //	public int noticeUpdate(Map<String, Object> paramMap) throws Exception;

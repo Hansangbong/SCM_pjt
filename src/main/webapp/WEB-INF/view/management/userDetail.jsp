@@ -11,39 +11,55 @@
 								<option value="B">기업 고객</option>
 								<option value="C">내부 직원</option>
 							</select>
-							<span>아이디</span>
-							<input type="text" id="userId2" name="userId" value="${list.loginID }" style="height: 25px; margin-right: 10px;"/>
-							비밀번호
-							<input type="text" id="passwd2" name="passwd" value="${list.password}" style="height: 25px; margin-right: 10px;"/> 	
-							<br><span>      </span>
-							회사명
-							<input type="text" id="copName2" name="copName" value="${list.cust_name }" style="height: 25px; margin-right: 10px;"/>
-							담당자명
-							<input type="text" id="manager2" name="manager" value="${list.cust_person}" style="height: 25px; margin-right: 10px;"/>
-							<br>
-							연락처
-							<input type="text" id="phone2" name="phon" value="${list.hp}" style="height: 25px; margin-right: 10px;"/>
-							이메일
-							<input type="text" id="email2" name="email" value="${list.email}" style="height: 25px; margin-right: 10px;"/>
-							<br>
-							직원명
-							<input type="text" id="clerk2" name="clerk" value="${list.name}" style="height: 25px; margin-right: 10px;"/>
-							담당업무
-							<span>
-								<select id="jobCode2">
-									<option value="A">SCM</option>
-									<option value="B">배송</option>
-									<option value="C">구매</option>
-									<option value="D">임원</option>
-								</select>
-							</span>  
-							<br>
-							우편번호
-							<input type="text" id="zipCode2" name="zipCode" value="${list.zip_code}" style="height: 25px; margin-right: 10px;"/><br>
-							주소
-							<input type="text" id="address2" name="address" value="${list.addr}" style="height: 25px; margin-right: 10px;"/><br>
-							상세주소
-							<input type="text" id="addressDetail2" name="addressDetail" value="${list.addr_detail}" style="height: 25px; margin-right: 10px;"/>
+							<table class="row">
+								<caption>caption</caption>
+								<colgroup>
+									<col width="120px">
+									<col width="*">
+									<col width="120px">
+									<col width="*">	
+								</colgroup>
+								<tbody>
+								
+								<tr>
+									<th><span>아이디</span></th>
+									<td><input type="text" id="userId2" name="userId" value="${list.loginID }" style="height: 25px; margin-right: 10px;"/></td>
+									<th>비밀번호</th>
+									<td><input type="text" id="passwd2" name="passwd" value="${list.password}" style="height: 25px; margin-right: 10px;"/></td>
+									<th>연락처</th>
+									<td><input type="text" id="phone2" name="phon" value="${list.hp}" style="height: 25px; margin-right: 10px;"/></td> 	
+								</tr>
+								<tr>
+									<th>이메일</th>
+									<td><input type="text" id="email2" name="email" value="${list.email}" style="height: 25px; margin-right: 10px;"/></td>
+									<th>직원명</th>
+									<td><input type="text" id="clerk2" name="clerk" value="${list.name}" style="height: 25px; margin-right: 10px;"/></td>
+									<th>담당업무</th>
+									<td><span>
+										<select id="jobCode2" >
+											<option value="A">임원</option>
+											<option value="B">고객</option>
+											<option value="C">SCM 관리자</option>
+											<option value="D">배송 담당자</option>
+											<option value="E">구매 담당자</option>
+										</select>
+										</span>
+									</td>
+								</tr>
+								<tr>
+									<th>우편번호</th>
+									<td><input type="text" id="zipCode2" name="zipCode" value="${list.zip_code}" style="height: 25px; margin-right: 10px;"/><br></td>
+									<th>주소</th>
+									<td><input type="text" id="address2" name="address" value="${list.addr}" style="height: 25px; margin-right: 10px;"/><br></td>
+									<th>상세주소</th>
+									<td><input type="text" id="addressDetail2" name="addressDetail" value="${list.addr_detail}" style="height: 25px; margin-right: 10px;"/></td>
+								</tr>							
+							</tbody>
+							</table>
+							<!--회사명  -->
+							<input type="hidden" id="copName2" name="copName" value="${list.cust_name }" style="height: 25px; margin-right: 10px;"/>
+							<!--담당자명  -->
+							<input type="hidden" id="manager2" name="manager" value="${list.cust_person}" style="height: 25px; margin-right: 10px;"/>
 							
 							<a class="btnType red" href="" name="ajust"  id="ajustBtn"><span>수정</span></a>
 							<a class="btnType red" name="cancle"  id="cancleBtn2"><span>취소</span></a>
@@ -55,10 +71,11 @@
 
 <script>
 $(document).ready(function() {
-	<c:forEach var="list" items="${user}" varStatus="status">
-    	var jobCode = "${list.job_code}";
-    	$('#jobCode').val(jobCode);
-	</c:forEach>
+	
+    	var jobCode = $(this).val();
+    	
+    	$('#jobCode2').val('C');
+	
 
 	$("#ajustBtn").click(function() {
 		userUpdate();

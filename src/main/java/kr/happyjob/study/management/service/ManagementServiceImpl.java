@@ -1,18 +1,16 @@
 package kr.happyjob.study.management.service;
 
-import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import kr.happyjob.study.common.comnUtils.FileUtilCho;
-import kr.happyjob.study.management.dao.ManagementDao;  
+import kr.happyjob.study.management.dao.ManagementDao;
 import kr.happyjob.study.management.model.ManagementModel;
 
 @Service
@@ -20,6 +18,8 @@ public class ManagementServiceImpl implements ManagementService {
 
 	@Autowired
 	ManagementDao managementDao;
+	
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Value("${fileUpload.rootPath}")
 	private String rootPath;
@@ -135,13 +135,6 @@ public class ManagementServiceImpl implements ManagementService {
 	public int newCompanySave(Map<String, Object> paramMap) {
 		// TODO Auto-generated method stub
 		return managementDao.newCompanySave(paramMap);
-	}
-	
-
-	@Override
-	public void orderComponyDelete(Map<String, Object> paramMap) {
-		// TODO Auto-generated method stub
-		managementDao.orderComponyDelete(paramMap);
 	}
 
 	@Override

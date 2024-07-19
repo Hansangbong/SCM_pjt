@@ -15,25 +15,348 @@
 -->
 
 <script type="text/javascript">
-//배송지시서작성 버튼을 누르면 팝업창 나옴
-$(document).ready(function(){
-    $("#openDeliverybtn").click(function(){
-        $("#deliveryDirectionPop").modal('show');
-    });
-    
-    $("#openOrderbtn").click(function(){
-        $("#orderDirectionPop").modal('show');
-    });
-});
+	var findStatus;// = $("#findStatus"); 
+	
+	//수주리스트 불러오기
+	$(function() {
+		//밑은 배송에 관한 js
+		obtainList();
+		//orderList();
+		//searchBtnEvent();
+		
+		$("#btnDeliveryinsert").click(function() {
+			insertDelivery();
+	    });
+		
+		changeEvent();
+		$("#btnDeliveryUpdate").click(function() {
+			deliveryUpdate();
+		})
+		$("#btnDeliveryClose").click(function() {
+			gfCloseModal();
+		})
 
+		
+	})
+	
+	function searchBtnEvent() {
+		$("#searchBtn").click(function(event){
+			event.preventDefault();
+			obtainList();
+		})
+	}
+	
+	
+	//수주내역 전체 리스트
+	function obtainList() {
+		let param = {
+				searchTitle : $("#searchTitle").val(),
+				searchStDate : $("#searchStDate").val(),
+				searchEdDate : $("#searchEdDate").val(),
+		}
+		var callBackFunction = function(res) {
+			$("#obtainList").empty().append(res);
+		}
+		callAjax("/business/obtainList.do", "post", "text", false, param, callBackFunction);
+	}
+	
+	//여기서부터는 배송에 관한 js
+	//배송지시서 버튼 클릭시 데이터 값 넘겨지면서 모달창 나옴
+	function deliveryModal(info) {
+	    var parentRow = $(info).closest('tr'); // 클릭된 버튼의 부모 행을 찾습니다.
+	    
+	    var parentRow1 = parentRow.find("#obtain_seq").text();
+	    var parentRow2 = parentRow.find("#obtain_obtain_date").text();
+	    var parentRow3 = parentRow.find("#obtain_cust_name").text();
+	    var parentRow4 = parentRow.find("#obtain_item_name").text();
+	    var parentRow5 = parentRow.find("#obtain_obtain_count").text();
+	    var parentRow6 = parentRow.find("#obtain_depositYN").text();
+	    var parentRow7 = parentRow.find("#obtain_item_code").text();
+	    var parentRow8 = parentRow.find("#obtain_addr").text();
+
+	    $("#seq").empty();
+	    $("#obtain_date").empty();
+	    $("#cust_name").empty();
+	    $("#item_name").empty();
+	    $("#obtain_count").empty();
+	    $("#depositYN").empty();
+	    $("#item_code").empty();
+	    $("#addr").empty();
+	    
+	    
+	    // 모달에 데이터 설정
+	    $("#seq").text(parentRow1);
+	    $("#obtain_date").text(parentRow2);
+	    $("#cust_name").text(parentRow3);
+	    $("#item_name").text(parentRow4);
+	    $("#obtain_count").text(parentRow5);
+	    $("#depositYN").text(parentRow6);
+	    $("#item_code").text(parentRow7);
+	    $("#addr").text(parentRow8);
+	    
+	    
+	    //배송원조회
+	    findDeliveryMan();
+   		//창고조회-제품이 있는
+	    findStorage();
+	    
+   		//1이면 수정, 0이면 작성
+	    finddataStatus();
+   		//배송지시서 모달에 데이터붙이기
+	    
+   		selectDeliveryModal();
+   		
+	    $("#select_storage").empty();
+        $("#select_storage_count").val('');
+        $("#deliveryNum").empty();
+	    gfModalPop("#deliveryPop");
+	    
+	}
+	
+	//배송원 찾기
+	function findDeliveryMan() {
+		let param = {	}
+		var callBackFunction = function(res) {
+			//console.log(res);
+	        // 셀렉트 박스를 비움
+	        $("#insert_deliveryName").empty();
+	        $("#insert_deliveryName").append('<option value="">배송담당자</option>');
+			
+	        
+	        // 서버로부터 받은 데이터를 셀렉트 박스에 추가
+	        res.forEach(function(deliveryManList) {
+	            var option = $("<option></option>")
+	                .attr("value", deliveryManList.name)
+	                .text(deliveryManList.name);
+	            $("#insert_deliveryName").append(option);
+	        });
+		}
+		
+	    callMyAjax("/business/deliveryMan.do", "POST", "json", true, param, callBackFunction);
+	}
+	
+	
+	// AJAX 함수 (배송원, 창고찾기용 ajax) => json데이터로 진짜 보내는 ajax
+	function callMyAjax(url, method, dataType, async, param, successCallback) {
+		//console.log("param : " + param.Storage_item_code)
+		
+	    $.ajax({
+	        url: url,
+	        type: method,
+	        contentType: "application/json", // JSON 데이터를 보내기 위해 설정
+	        dataType: dataType, // 서버로부터 JSON 응답을 받기 위해 설정
+	        async: async,
+	        data: JSON.stringify(param), // 파라미터를 JSON 문자열로 변환
+	        success: function(data) {
+	        	successCallback(data)
+	        },
+	        error: function(xhr, status, error) {
+	        	//console.log(param);
+	            //console.log("AJAX Error: " + status + error);
+	        }
+	        
+	    });
+	}
+	
+	//창고찾기
+	function findStorage() {
+		//console.log($("#item_code").text());
+		let param = {
+				Storage_item_code : $("#item_code").text()
+		}
+	    //console.log("Parameter:", param); // param 객체를 출력하여 확인
+
+		var callBackFunction = function(res) {
+			
+	        // 셀렉트 박스를 비움
+	        $("#select_storage").empty();
+	        $("#select_storage_count").empty();
+	        $("#select_storage").append('<option value=""></option>');
+			
+	        
+	        // 서버로부터 받은 데이터를 셀렉트 박스에 추가
+	        res.forEach(function(getStorageList) {
+	            var option = $("<option></option>")
+	                .attr("value", getStorageList.storage_code)
+	                .text(getStorageList.storage_name);
+	            $("#select_storage").append(option);
+	            
+	            
+	         // 셀렉트 박스 선택 시 해당 창고의 재고 수량을 보여줌
+	            $("#select_storage").change(function() {
+	                var selectedStorage = $(this).val();
+	                var selectedStorageCount = getStorageList.inventory_count;
+	               
+	                // 선택한 창고의 재고 수량을 찾아서 입력
+	                res.forEach(function(getStorageList) {
+	                    if (getStorageList.storage_code === selectedStorage) {
+	                        selectedStorageCount = getStorageList.inventory_count;
+	                        return false; // 반복문 종료
+	                    }
+	                });
+	            
+	                // 재고 수량을 input 필드에 입력
+	                $("#select_storage_count").val(selectedStorageCount);
+	            });
+	        });
+	        //getStorageList.inventory_count=10
+	        //$('select_storage_count')
+		}
+	    
+	    callMyAjax("/business/findStorage.do", "POST", "json", true, param, callBackFunction);
+	}
+	
+	//모달 띄울때 수정인지, 작성인지 파악
+	function finddataStatus()  {
+	    
+	    let param = {    
+	        item_code : $("#item_code").text(),
+	        obtain_date : $("#obtain_date").text(),
+	    }
+	    
+	    var callBackFunction = function(res) {
+	        console.log("데이터값이 뭘로 넘어왔을까 update=1, insert는 0이여야함 " +  res); //res.deliverCnt
+	        console.log(res); //res.deliverCnt
+
+	        // deliveryCnt 값에 따라 테이블 바디 및 버튼 표시 설정
+	        if (res.status === 0) {
+	            $('#TableInsertOrUpdate').hide(); // 테이블 바디 숨기기
+	            $('#btnDeliveryinsert').show(); // 작성 버튼 보이기
+	            $('#btnDeliveryUpdate').hide(); // 수정 버튼 숨기기
+	        } else {
+	            $('#TableInsertOrUpdate').show(); // 테이블 바디 보이기
+	            $('#btnDeliveryinsert').hide(); // 작성 버튼 숨기기
+	            $('#btnDeliveryUpdate').show(); // 수정 버튼 보이기
+	        }
+	    }
+	    
+	    callMyAjax("/business/findstatus.do", "POST", "json", true, param, callBackFunction);
+	}
+
+	
+	// 배송지시서 등록 요청 함수
+	function insertDelivery() {
+		/*
+		if ($("#changeDeliveryName").val() === '' || $("#changeDeliveryName").val() === null && 
+				$("#changestorageName").val() === '' || $("#changestorageName").val() === null) {
+			alert('배송담당자와 창고이름을 확인해주세요')	
+		    return;  // 함수 종료
+		}*/
+		
+	    var data = {
+		    delivery_end_loc: $('#addr').text(),
+		    obtain_count: $('#obtain_count').text(),
+		    delivery_name: $('#insert_deliveryName').val(),
+		    item_code : $('#item_code').text(),
+		    storage_code : $('#select_storage').val(),
+		    seq : $('#seq').text()
+	    };
+	   
+	    $.ajax({
+	        url: '/business/deliveryInsert.do', // 실제 서버의 URL
+	        type: 'POST',
+	        contentType: 'application/json',
+	        data: JSON.stringify(data),
+	        success: function(response) {
+	            if (response === 1) {
+	                alert('배송지시서 등록 성공하였습니다.');
+	                location.reload(); // 예시로 페이지 리로드
+	            } else {
+	                alert('배송지시서 등록 실패하였습니다.');
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            alert('배송지시서 등록 실패하였습니다: ');
+	        }
+	    });
+	    
+	}
+		//모달 선택시에 창고 및 배송기사 체인지
+		function deliveryUpdate() {
+	    if ($("#changeDeliveryName").text() === '' || $("#changeDeliveryName").text() === null || 
+	        $("#changestorageName").text() === '' || $("#changestorageName").text() === null) {
+	        alert('배송담당자와 창고이름을 확인해주세요');
+	        return;  // 함수 종료
+	    }
+	
+	    let param = {
+	        delivery_num: $("#up_delivery_num").text(),
+	        delivery_name: $("#changeDeliveryName").text(),
+	        storage_name: $("#changestorageName").text()
+	    };
+	
+	    let callBackFunction = function(res) {
+	        if(res === 0) {
+	            alert('수정에 실패하였습니다.');
+	            location.reload();
+	        } else {
+	            alert('수정에 성공하였습니다.');
+	            location.reload();
+	        }
+	    };
+	
+	    callMyAjax("/business/deliveryUpdate.do", "POST", "json", true, param, callBackFunction);
+	}
+
+	
+	
+	
+	// 배송지시서 업데이트 할거임 => 모달창 띄울때 넣어주면 됨
+    function selectDeliveryModal() {
+        let param = {
+            item_code: $("#item_code").text(),
+            obtain_date: $("#obtain_date").text().trim()
+        };
+
+        // AJAX 호출 후 서버로부터 데이터를 받아 처리할 콜백 함수
+        let callBackFunction = function(response) {
+            console.log("서버에서 받은 데이터:", response);
+            let tableBody = '';
+            if (response.length > 0) { // 배열의 길이 확인
+                let re_deliveryData = response[0]; // 첫 번째 객체 선택
+                tableBody += '<tr>';
+                tableBody += '<td id="up_delivery_num">' + re_deliveryData.delivery_num + '</td>';
+                tableBody += '<td>' + re_deliveryData.delivery_dateFMT + '</td>';
+                tableBody += '<td>' + re_deliveryData.item_name + '</td>';
+                tableBody += '<td>' + re_deliveryData.obtain_count + '</td>';
+                tableBody += '<td>' + re_deliveryData.storage_name + '</td>';
+                tableBody += '<td>' + re_deliveryData.storage_loc + '</td>';
+                tableBody += '<td>' + re_deliveryData.delivery_end_loc + '</td>';
+                tableBody += '<td>' + re_deliveryData.delivery_name + '</td>';
+                tableBody += '</tr>';
+            } else {
+                tableBody += '<tr><td colspan="8">데이터가 없습니다.</td></tr>';
+            }
+            $('#deliveryTableBody').html(tableBody); // 테이블 업데이트
+        };
+
+        // AJAX 호출
+        callMyAjax("/business/deliveryReSelectUpdate.do", "POST", "json", true, param, callBackFunction);
+    }
+		
+		
+		//배송지시서 모달에서 값 바꿔주기(input 수정시에)
+		function changeEvent(){
+			 $('#select_storage').change(function() {
+				 $("#changestorageName").text($("#select_storage").text())
+			 });
+			 $('#insert_deliveryName').change(function() {
+				 $("#changeDeliveryName").text($("#insert_deliveryName").val())
+			 });
+		}
+		
 </script>
 </head>
 <body>
+  <form id="myForm" action="" method=""><!--폼으로 전체 감싼거-->
+
 	<input type="hidden" id="currentPage" value="">  <!-- 현재페이지는 처음에 항상 1로 설정하여 넘김  -->
 	<input type="hidden" name="action" id="action" value=""> 
 	<div id="wrap_area">
 		<h2 class="hidden">header 영역</h2> 
 		<jsp:include page="/WEB-INF/view/common/header.jsp"></jsp:include>
+
+
 
 		<h2 class="hidden">컨텐츠 영역</h2>
 		<div id="container">
@@ -55,9 +378,14 @@ $(document).ready(function(){
 						
 					<p class="conTitle">
 						<span>수주현황</span> 
-						<span class="fr">					
-                          <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
-						  <a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
+						<span class="fr">
+								<select name="" id="searchType">
+			                        <option value="item_name" selected>주문일자 조회</option>
+			                        <option value="equipment_type">반품일자 조회</option>
+			                     </select>
+											
+                          	<input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
+						  	<a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
 						</span>
 					</p> 
 						
@@ -67,68 +395,28 @@ $(document).ready(function(){
 		                            <colgroup>
 						                   <col width="50px">
 						                   <col width="50px">
-						                    <col width="60px">
+						                   <col width="60px">
 						                   <col width="50px">
 						                   <col width="50px">
 						                   <col width="50px">
 						                   <col width="50px">
-						                   <col width="50px">
-						                   <col width="50px">
-						                   <col width="50px">
-						                   <col width="50px">
-						                   <col width="150px">
-						                   <col width="150px">
 					                 </colgroup>
 								<thead>
-									<tr>
-							              <th scope="col">1.주문번호</th>
-							              <th scope="col">2.주문일자</th>
-							              <th scope="col">3.고객기업명</th>
-							              <th scope="col">4. 주문제품명</th>
-							              <th scope="col">5.총 재고개수</th>
-							              <th scope="col">6. 단가</th>
-							              <th scope="col">7. 주문개수</th>
-							              <th scope="col">8.금액 합계</th>
-							              <th scope="col">9. 반품요청 여부</th>
-							              <th scope="col">10. 반품처리일자</th>
-							              <th scope="col">11.입금여부</th>
-							              <th scope="col">12.배송지시서작성</th>
-							              <th scope="col">13.반품지시서작성</th>
+									<tr >
+							              <th scope="col">주문번호</th>
+							              <th scope="col">주문일자</th>
+							              <th scope="col">고객기업명</th>
+							              <th scope="col">주문제품명</th>
+							              <th scope="col">주문개수</th>
+							              <!-- <th scope="col">반품요청 여부</th>
+							              <th scope="col">반품처리일자</th> -->
+							              <th scope="col">입금여부</th>
+							              <th scope="col">배송지시서 작성</th>
 									</tr>
 
 								</thead>
-								<tbody id="noticeList">
-									<tr>
-											<td>더미 2</td>
-											<td>더미 2024-07-04</td>
-											<td>더미 LG</td>
-											<td>더미 서버(HP)</td>
-											<td>더미 50</td>
-											<td>더미 1000000</td>
-											<td>더미 20</td>
-											<td>더미 20*1000000</td>
-											<td>더미 Y</td>
-											<td>더미 N</td>
-											<td>더미 20024-07-06</td>
-					                    	<td><button id="openDeliverybtn" class="btn btn-primary btn-sm">배송지시서 작성</button></td>
-					                  		<td><button id="openOrderbtn" class="btn btn-secondary btn-sm">발주지시서 작성</button></td>
-									</tr>
-									<tr>
-											<td>더미 1</td>
-											<td>더미 2024-07-05(최신)</td>
-											<td>더미 삼성</td>
-											<td>더미 라우터</td>
-											<td>더미 20</td>
-											<td>더미 1000</td>
-											<td>더미 20</td>
-											<td>더미 230*1000</td>
-											<td>더미 Y</td>
-											<td>더미 Y</td>
-											<td>더미 2024-07-04</td>
-											<td><button class="btn btn-primary btn-sm">배송지시서 작성</button></td>
-					                  		<td><button class="btn btn-secondary btn-sm">발주지시서 작성</button></td>
-									</tr>
-								</tbody>
+								<tbody id="obtainList"></tbody>
+								<tbody id="orderList"></tbody>
 							</table>
 							
 							<!-- 페이징 처리  -->
@@ -147,131 +435,95 @@ $(document).ready(function(){
 		</div>
 	</div>
 	
-	<!-- 배송지시서 작성 모달팝업 -->
-	<div id="deliveryDirectionPop" class="layerPop layerType2" style="width: 600px;">
-		<dl>
-			<dt>
-				<strong>배송지시서</strong>
-			</dt>
-			<dd class="content">
-				
-				<table class="row">
-				    <caption>배송지시서</caption>
-				    <tbody>
-				        <tr>
-				            <th scope="row">주문번호</th>
-				            <td colspan="3">
-				                <span id="productName">00001</span>
-				            </td>
-				        </tr>
-				        <tr>
-				            <th scope="row">주문일자</th>
-				            <td colspan="3">
-				                <span id="returnQuantity">2020-07-07</span> 
-				            </td>
-				        </tr>
-				        <tr>
-				            <th scope="row">고객 기업명</th>
-				            <td colspan="3">
-				                <span id="returnAmount">넥슨</span> 
-				            </td>
-				        </tr>
-				        <tr>
-				            <th scope="row">제품명</th>
-				            <td colspan="3">
-				                <span id="returnAmount">라우터</span> 
-				            </td>
-				        </tr>
-				        <tr>
-				            <th scope="row">주문 수량</th>
-				            <td colspan="3">
-				                <span id="returnAmount">50</span>
-				            </td>
-				        </tr>				        
-				        <tr>
-				            <th scope="row">배송담당자</th>
-				            <td colspan="3">
-				                <span id="returnAmount">김아무개</span> 
-				            </td>
-				        </tr>				        
-				        <tr>
-				            <th scope="row">입금여부</th>
-				            <td colspan="3">
-				                <span id="returnAmount">Y</span> 
-				            </td>
-				        </tr>				        
-				    </tbody>
-				</table>
-			</dd>
-		</dl>
-		<a href="" class="closePop"><span class="hidden">닫기</span></a>
-		<button id="saveDeliveryPop" type="button">저장</button>
-		<button id="updateDeliveryPop" type="button">수정</button>
-		
-		<!--  -->
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		<button id="closeOrderPop" type="button">닫기</button>
-		
-		<!--
-		<a href="" class="SaveDeliveryPop"><span >저장</span></a>
-		<a href="" class="updateDeliveryPop"><span >수정</span></a>
-		<a href="" class="updateDeliveryPop"><span >닫기</span></a>
-		  -->
-	</div>
-
-		
-	<!-- 발주지시서 작성 모달팝업 -->
-	<div id="orderDirectionPop" class="layerPop layerType2" style="width: 600px;">
-	    <dl>
-	        <dt>
-	            <strong>발주지시서</strong>
-	        </dt>
-	        <dd class="content">
-	            <!-- s : 여기에 내용입력 -->
-	            <table class="row">
-	                <caption>제품 정보</caption>
-	                <tbody>
-	                    <tr>
-	                        <th scope="row">제품번호</th>
-	                        <td colspan="3">
-	                            <span id="productName">0004</span> <!-- 여기에 서버에서 가져온 제품명 출력 -->
-	                        </td>
-	                    </tr>
-	                    <tr>
-	                        <th scope="row">제품명</th>
-	                        <td colspan="3">
-	                            <span id="returnQuantity">UPS(삼품전원테크)</span> <!-- 여기에 서버에서 가져온 수량 출력 -->
-	                        </td>
-	                    </tr>
-	                    <tr>
-	                        <th scope="row">발주 개수</th>
-	                        <td colspan="3">
-	                            <span id="returnAmount">460,000</span> <!-- 여기에 서버에서 가져온 반품 금액 출력 -->
-	                        </td>
-	                    </tr>
-	                </tbody>
-	            </table>
-	        </dd>
-	    </dl>
-	    <a href="" class="closePop"><span class="hidden">닫기</span></a>
-	    <button id="saveOrderPop" type="button">저장</button>
-	    <button id="updateOrderPop" type="button">수정</button>
-	    <button id="closeOrderPop" type="button">닫기</button>
-	</div>
 	
+		
+		<!-- 배송 모달팝업 -->
+ 		<div id="deliveryPop" class="layerPop layerType2" style="width:60rem; height: 25rem;">
+			<dl>
+				<dt><strong>배송지시서 작성</strong></dt>
+				<dd class="content">
+					<div style="margin-bottom: 1rem;">
+						<table class='col'>
+							<thead>
+								<tr>
+									<th scope='col'>주문번호</th>
+									<th scope='col'>주문일자</th>
+									<th scope='col'>기업명</th>
+									<th scope='col'>제품명</th>
+									<th scope='col'>주문수량</th>
+									<th scope='col'>배송담당자(input태그)</th>
+									<th scope='col'>입금여부</th>
+								</tr>
+							</thead>
+							<tbody id='deliveryModalInfo'>
+						    <tr>
+						        <td id='seq'></td>
+						        <td id='obtain_date'></td>
+						        <td id='cust_name'></td>
+						        <td id='item_name'></td>
+						        <td id='obtain_count'></td>
+						        <td>
+						            <select name='' id='insert_deliveryName'>
+						                <option value=''>배송담당자</option>
+						            </select>
+						        </td>
+						        <td id='depositYN'></td>
+						        <td style='display:none' id='item_code'></td>
+						        <td style='display:none' id='addr'></td>
+						        <td style='display:none' id='deliveryNum'></td>
+								<td style='display:none' id='changestorageName'></td>
+								<td style="display:none" id='changeDeliveryName'></td>
 
+						    </tr>
+						</tbody>
+
+						</table>
+					</div>
+					
+					<!-- 창고정보 -->
+					<div id = "whInfo" style="margin-bottom: 1rem; display: flex; justify-content: space-around; align-items: baseline;">
+						
+						<select name="select_storage" id="select_storage" >
+							  <option value="storage_code">창고선택</option>
+						</select>
+						
+						<span>재고수량</span><input id="select_storage_count" type="text" class = "totalStock" readonly="readonly" style="width: 180px; height: 30px;" />
+<!-- 						<a class="btnType blue" id="btnBDirec" name="btn" onClick = "appendDetail('b')"><span>선택확인</span></a>
+ -->					</div>
+					<div id="deli" style="display: none;"></div>
+					
+					<div id="TableInsertOrUpdate" style="height: 6rem;">
+						<table class='col'>
+							<thead>
+								<tr>
+									<th scope='col'>배송번호</th>
+									<th scope='col'>배송일자</th>
+									<th scope='col'>제품명</th>
+									<th scope='col'>배송수량</th>
+									<th scope='col'>배송창고</th>
+									<th scope='col'>출발지역</th>
+									<th scope='col'>배송지</th>
+									<th scope='col'>배송담당자</th>
+
+								</tr>
+							</thead>
+							<tbody id = "deliveryTableBody">
+							</tbody>
+						</table>
+					</div>
+
+					<div class="btn_areaC mt30">
+						<a class="btnType blue" id="btnDeliveryinsert" name="btn"><span>작성</span></a>
+						<a class="btnType blue" id="btnDeliveryUpdate" name="btn"><span>수정</span></a>
+						<a class="btnType gray" id="btnDeliveryClose" name="btn"><span>닫기</span></a>
+					</div>
+				</dd>
+
+			</dl>
+			<a href="" class="closePop"><span class="hidden">닫기</span></a>			
+		</div>
+
+	
+  </form>
 </body>
 </html>

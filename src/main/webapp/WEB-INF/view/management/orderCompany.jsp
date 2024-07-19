@@ -63,20 +63,6 @@
 				callBackFunction);
 	}
 
-	function orderComponyDelete(seq) {
-		var param = {
-			company_seq : seq
-		};
-
-		var callBackFunction = function(res) {
-
-			orderCompanyList();
-		}
-
-		callAjax("/management/orderComponyDelete.do", "post", "text", false,
-				param, callBackFunction);
-	}
-
 	function orderComponyDetail(seq) {
 
 		$("#hiddenInput").val(seq)
@@ -95,51 +81,53 @@
 		callAjax("/management/orderComponyDetail.do", "post", "text", false,
 				param, callBackFunction);
 	}
-	
-	function orderComSelectItem(seq){
+
+	function orderComSelectItem(seq) {
 		var param = {
-				company_seq : seq
-			};
+			company_seq : seq
+		};
 
-			var callBackFunction = function(res) { 
+		var callBackFunction = function(res) {
 
-				$("#selectOption").empty().append(res);				
-			}
+			$("#selectOption").empty().append(res);
+		}
 
-			callAjax("/management/orderComSelectItem.do", "post", "text", false, param, callBackFunction);
+		callAjax("/management/orderComSelectItem.do", "post", "text", false,
+				param, callBackFunction);
 	}
-	
-	function orderComAddItem(){
-		
+
+	function orderComAddItem() {
+
 		var param = {
-				company_seq : seq
-			};
+			company_seq : seq
+		};
 
-			var callBackFunction = function(res) {
+		var callBackFunction = function(res) {
 
-				console.log(res);
-				$("#selectOption").empty().append(res);				
-			}
+			console.log(res);
+			$("#selectOption").empty().append(res);
+		}
 
-			callAjax("/management/orderComSelectItem.do", "post", "text", false, param, callBackFunction);
-		
+		callAjax("/management/orderComSelectItem.do", "post", "text", false,
+				param, callBackFunction);
+
 	}
-	
-	function newItemSave(){
-		
+
+	function newItemSave() {
+
 		console.log($("#selectOption").val())
 		var param = {
-				company_seq : $("#hiddenInput").val(),
-				item_code : $("#selectOption").val()
-			};
+			company_seq : $("#hiddenInput").val(),
+			item_code : $("#selectOption").val()
+		};
 
-			var callBackFunction = function(res) {
+		var callBackFunction = function(res) {
 
-			}
+		}
 
-			callAjax("/management/newItemSave.do", "post", "text", false, param, callBackFunction);
+		callAjax("/management/newItemSave.do", "post", "text", false, param,
+				callBackFunction);
 	}
-
 </script>
 
 <style type="text/css">
@@ -147,7 +135,7 @@
 
 </head>
 <body>
-	
+
 	<input type="hidden" id="currentPage" value="">
 	<!-- 현재페이지는 처음에 항상 1로 설정하여 넘김  -->
 	<input type="hidden" name="action" id="action" value="">
@@ -188,14 +176,11 @@
 										<colgroup>
 											<col width="20px">
 											<col width="100px">
-											<col width="10px">
-
 										</colgroup>
 										<thead>
 											<tr>
 												<th scope="col">업체번호</th>
 												<th scope="col">업체이름</th>
-												<th scope="col"></th>
 											</tr>
 										</thead>
 										<tbody id="orderCompanyList"></tbody>
@@ -260,9 +245,8 @@
 						<tbody id="orderComponyDetail"></tbody>
 					</table>
 					<div style="margin-top: 15px;">
-						<label>물품추가</label>
-						<select id="selectOption">				 		
-							
+						<label>물품추가</label> <select id="selectOption">
+
 						</select>
 					</div>
 				</div>

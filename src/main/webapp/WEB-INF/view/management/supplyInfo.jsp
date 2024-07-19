@@ -137,6 +137,7 @@ $(document).ready(function() {
 
 $(function(){
 	supplySearch();
+	$('.test').hide();
 })
 
 function supplySearch(cpage){

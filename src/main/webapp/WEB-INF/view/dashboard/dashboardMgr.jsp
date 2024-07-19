@@ -10,8 +10,8 @@
 <title>Job Korea</title>
 
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
-<script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script>
-<script src="https://unpkg.com/lodash@4.13.1/lodash.min.js"></script>
+<!-- <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script>
+<script src="https://unpkg.com/lodash@4.13.1/lodash.min.js"></script> -->
 <!-- D3 -->
 <style>
 //
@@ -26,7 +26,23 @@ click-able rows
 }
 </style>
 <script type="text/javascript">
-	
+$(document).ready(function() {
+    // AJAX 요청으로 target.jsp 파일 가져오기
+   /*  $.ajax({
+        url: "/WEB-INF/view/dashboard/Notice.jsp",
+        type: "GET",
+        dataType: "html",
+        success: function(response) {
+            // 응답에서 필요한 부분 추출
+            var content = $(response).find(".content").html();
+            // #mainContent div에 추가
+            $("#mainContent").html(content);
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX 오류 발생:", error);
+        }
+    }); */
+});
 </script>
 
 </head>
@@ -59,13 +75,15 @@ click-able rows
 								<span class="btn_nav bold">메인</span> <a
 									href="../dashboard/dashboard.do" class="btn_set refresh">새로고침</a>
 							</p>
-							<%@ include file="/WEB-INF/view/dashboard/Notice.jsp" %>
+							 <div id="mainContent">
+        						<!-- target.jsp의 #content 부분이 여기 추가됩니다 -->
+        						
+    						</div>					
+							
+								
 							<%@ include file="/WEB-INF/view/dashboard/Order.jsp" %>
-							<%@ include file="/WEB-INF/view/dashboard/Sale.jsp" %>
-							<%@ include file="/WEB-INF/view/dashboard/Product.jsp" %>
-							<%@ include file="/WEB-INF/view/dashboard/Customer.jsp" %>
-							
-							
+							<%@ include file="/WEB-INF/view/dashboard/Notice.jsp" %>
+						
 						</div>
 							
  					</li>
