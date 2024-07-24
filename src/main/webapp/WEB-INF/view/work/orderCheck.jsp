@@ -14,6 +14,7 @@
 		orderList()
 		registerBtnEvent()
 		clickEvent()
+		dateCheck()
 	})
 	
 	function registerBtnEvent(){
@@ -66,7 +67,22 @@
 		callAjax("/work/deposit.do", "post", "text", false, param, callBackFunction);
 	}
 	
-	
+	function dateCheck(){
+		$('input[type=date][name="searchEdDate"]').change(function(){
+			if($("#searchStDate").val() > $("#searchEdDate").val()){
+				alert("날짜 설정을 확인하세요");
+				$("#searchEdDate").val(null);
+			}
+		}) 
+		$('input[type=date][name="searchStDate"]').change(function(){
+			if($("#searchEdDate").val()){
+				if($("#searchStDate").val() > $("#searchEdDate").val()){
+					alert("날짜 설정을 확인하세요");
+					$("#searchEdDate").val(null);
+				}			
+			}
+		}) 
+	} 
 </script> 
 
 <style type="text/css">

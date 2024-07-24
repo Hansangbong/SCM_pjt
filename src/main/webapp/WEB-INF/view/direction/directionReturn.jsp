@@ -80,6 +80,7 @@ function returnList() {
 			                        <option value="manufac">제조사</option>
 			                     </select>
 			                      -->
+			                    반품제품명
 						        <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
 						        기간
 						        <input type="date" id="searchStDate" name="searchStDate" style="height: 25px; margin-right: 10px;"/> 

@@ -22,7 +22,13 @@
 		//밑은 배송에 관한 js
 		obtainList();
 		//orderList();
-		//searchBtnEvent();
+		searchBtnEvent();
+		
+		$("#searchBtn").click(function(e){
+			e.preventDefault();
+			obtainList();
+		});
+		
 		
 		$("#btnDeliveryinsert").click(function() {
 			insertDelivery();
@@ -73,6 +79,7 @@
 	    var parentRow6 = parentRow.find("#obtain_depositYN").text();
 	    var parentRow7 = parentRow.find("#obtain_item_code").text();
 	    var parentRow8 = parentRow.find("#obtain_addr").text();
+	    var parentRow9 = parentRow.find("#obtain_inventory_count").text();
 
 	    $("#seq").empty();
 	    $("#obtain_date").empty();
@@ -82,6 +89,7 @@
 	    $("#depositYN").empty();
 	    $("#item_code").empty();
 	    $("#addr").empty();
+	    $("#inventory_count").empty();
 	    
 	    
 	    // 모달에 데이터 설정
@@ -93,6 +101,7 @@
 	    $("#depositYN").text(parentRow6);
 	    $("#item_code").text(parentRow7);
 	    $("#addr").text(parentRow8);
+	    $("#inventory_count").text(parentRow9);
 	    
 	    
 	    //배송원조회
@@ -301,7 +310,7 @@
 	
 	
 	
-	// 배송지시서 업데이트 할거임 => 모달창 띄울때 넣어주면 됨
+	// 배송지시서 1row select => 모달창 띄울때 넣어주면 됨
     function selectDeliveryModal() {
         let param = {
             item_code: $("#item_code").text(),
@@ -331,7 +340,7 @@
         };
 
         // AJAX 호출
-        callMyAjax("/business/deliveryReSelectUpdate.do", "POST", "json", true, param, callBackFunction);
+        callMyAjax("/business/deliverySelectUpdate.do", "POST", "json", true, param, callBackFunction);
     }
 		
 		
@@ -379,13 +388,12 @@
 					<p class="conTitle">
 						<span>수주현황</span> 
 						<span class="fr">
-								<select name="" id="searchType">
-			                        <option value="item_name" selected>주문일자 조회</option>
-			                        <option value="equipment_type">반품일자 조회</option>
-			                     </select>
-											
-                          	<input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
-						  	<a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
+                          고객기업명<input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
+						  기간
+                          <input type="date" id="searchStDate" name="searchStDate" style="height: 25px; margin-right: 10px;"/> 
+                          ~ 
+                          <input type="date" id="searchEdDate" name="searchEdDate" style="height: 25px; margin-right: 10px;"/>
+						  <a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
 						</span>
 					</p> 
 						
@@ -394,12 +402,13 @@
 								<caption>caption</caption>
 		                            <colgroup>
 						                   <col width="50px">
+						                   <col width="100px">
 						                   <col width="50px">
-						                   <col width="60px">
-						                   <col width="50px">
-						                   <col width="50px">
-						                   <col width="50px">
-						                   <col width="50px">
+						                   <col width="40px">
+						                   <col width="40px">
+						                   <col width="40px">
+						                   <col width="40px">
+						                   <col width="40px">
 					                 </colgroup>
 								<thead>
 									<tr >
@@ -408,6 +417,7 @@
 							              <th scope="col">고객기업명</th>
 							              <th scope="col">주문제품명</th>
 							              <th scope="col">주문개수</th>
+							              <th scope="col">재고개수</th>
 							              <!-- <th scope="col">반품요청 여부</th>
 							              <th scope="col">반품처리일자</th> -->
 							              <th scope="col">입금여부</th>

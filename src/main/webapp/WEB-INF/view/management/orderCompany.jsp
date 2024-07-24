@@ -25,12 +25,20 @@
 		});
 
 		$("#btnNewCompany").click(function(e) {
-			newCompanySave();
-			orderCompanyList();
+			if($("#newCompanyInput").val() != ""){				
+				newCompanySave();
+				orderCompanyList();
+			}else{
+				alert("빈칸멈춰!")
+			}
 		});
 		$("#btnNewItem").click(function(e) {
-			newItemSave();
-			orderCompanyList();
+			if($("#selectOption").val() != null){
+				newItemSave();
+				orderCompanyList();				
+			}else{
+				alert("고르셈")
+			}
 		});
 	}
 
@@ -245,9 +253,8 @@
 						<tbody id="orderComponyDetail"></tbody>
 					</table>
 					<div style="margin-top: 15px;">
-						<label>물품추가</label> <select id="selectOption">
-
-						</select>
+						<label>물품추가</label> 
+						<select id="selectOption"></select>
 					</div>
 				</div>
 				<div class="btn_areaC mt30">

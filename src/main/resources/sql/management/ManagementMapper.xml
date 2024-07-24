@@ -260,19 +260,17 @@
 				email,
 				zip_code,
 				addr,
-				addr_detail,
-				job_code
+				addr_detail
 			) values (
 				#{loginID},
-				#{user_Type},
+				#{job_code},
 				#{name},
 				#{password},
 				#{hp},
 				#{email},
 				#{zip_code},
 				#{addr},
-				#{addr_detail},
-				#{job_code}
+				#{addr_detail}
 			)
 	</insert>
 	
@@ -280,7 +278,7 @@
 	/* kr.happyjob.study.management.dao.ManagementDao.userAjust */
 		update tb_userinfo
 		   set 
-				user_type = #{user_Type} ,
+				user_type = #{job_code} ,
 				name = #{name} ,
 				password = #{password} ,
 				hp = #{hp} ,
@@ -382,19 +380,20 @@
 
 	<update id="comCodeAdjust">
 	/* kr.happyjob.study.management.dao.ManagementDao.comCodeAdjust */
-		update tb_group_code
+		UPDATE tb_group_code, tb_detail_code
 		   <set>
 		   <if test="group_code != null and !''.equals(group_code)">
-	            group_code = #{group_code},
+	            tb_group_code.group_code = #{group_code},
 	        </if> 
 		   <if test="group_name != null and !''.equals(group_name) ">
-	            group_name = #{group_name},
+	            tb_group_code.group_name = #{group_name},
 	        </if>
 	        <if test="use_yn != null and !''.equals(use_yn)">
-				use_yn = #{use_yn}
+				tb_group_code.use_yn = #{use_yn},
 	        </if>
+	        tb_detail_code.use_yn = #{use_yn}
 	        </set>
-			WHERE group_code = #{group_id}
+		WHERE tb_detail_code.group_code = #{group_id} AND tb_group_code.group_code = #{group_id}
 	</update>
 	
 	<update id="comDetailCodeAdjust">
@@ -626,6 +625,30 @@
 				#{product_detail }
 			)
 	</insert>
+	
+	<update id="productUpdate">
+	/* kr.happyjob.study.management.dao.ManagementDao.productUpdate */
+		update tb_item_info
+		<set>
+		  <if test="product_code != null and !''.equals(product_code)">
+	            item_code = #{product_code},
+	      </if>
+	      <if test="product_name != null and !''.equals(product_name)">
+	            item_name = #{product_name},
+	      </if>
+	      <if test="manufac != null and !''.equals(manufac)">
+	            manufac = #{manufac},
+	      </if>
+	      <if test="product_value != null and !''.equals(product_value)">
+	            provide_value = #{product_value},
+	      </if>
+	      <if test="product_detail != null and !''.equals(product_detail)">
+	            product_detail = #{product_detail}
+	      </if>
+		</set>
+		WHERE item_code = #{item_code}
+	</update>
+
 	
 	<delete id="productDelete">
 	/* kr.happyjob.study.management.dao.ManagementDao.productDelete */

@@ -53,11 +53,11 @@ $(document).ready(function() {
 		$("#groupCodeNameModalOrigin").val(groupName);
 		
 		 
-		if(groupYn == 'Y'){
-			$("input[name='codeRadio'][value=0]").prop("checked", true); //yes 채크
+		if(groupYn == 'Y'){ //라디오 ㅂ ㅓ튼의  선택 유무를 가져오기
+			$("input[name='codeRadio'][value=0]").prop("checked", true); //yes가 선택된 상태일 경우
 			$("#groupYnOrigin").val(groupYn);
 		} else {
-			$("input[name='codeRadio'][value=1]").prop("checked", true); // no 채크
+			$("input[name='codeRadio'][value=1]").prop("checked", true); // no가 선택도니 상태일 경우
 			$("#groupYnOrigin").val(groupYn);
 		}
 		

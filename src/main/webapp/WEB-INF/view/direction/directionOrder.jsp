@@ -113,6 +113,7 @@
 						            </ul>
 						        </div>
 						        드롭다운 메뉴 추가 끝 -->
+						        발주업체
 						        <input type="text" id="searchCompany" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
 						        기간
 						        <input type="date" id="searchStDate" name="searchStDate" style="height: 25px; margin-right: 10px;"/> 

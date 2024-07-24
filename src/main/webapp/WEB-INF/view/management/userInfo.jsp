@@ -110,10 +110,11 @@
 										<th>담당업무</th>
 										<td>
 											<select id="jobCode">
-												<option value="A">SCM</option>
-												<option value="B">배송</option>
-												<option value="C">구매</option>
-												<option value="D">임원</option>
+												<option value="A">임원</option>
+												<option value="B">고객</option>
+												<option value="C">SCM 관리자.</option>
+												<option value="D">배송 담당자</option>
+												<option value="E">구매 담당자</option>
 											</select>
 										</td>
 							
@@ -173,14 +174,6 @@ $(document).ready(function() {
     $("#searchBtn").click(function() {
     	detailSearch();
     })
-    
-   /* $("#type").click(function() {
-    	var select = $('#type').val();
-    	if(select == 'B'){
-    		$('#yourInputId').prop('disabled', true);
-    	}
-    });
-    */
     
 });
 
@@ -243,7 +236,14 @@ function userRegist(){ ////////신규 등록 기능
 		alert("저장 됐습니다");
 	}
 	
-	callAjax("/management/regist.do", "post", "text", false, param,callBackFunction);
+	if(loginId == '' || name == '' || user_type == '' || password == '' || hp == '' || email == '' || zip_code == '' || addr == '' || addr_detail == '' || job_code == ''){
+		alert("입력되지 않은 항목이 존재합니다.");
+	}
+	else {
+		callAjax("/management/regist.do", "post", "text", false, param,callBackFunction);	
+	}
+
+	
 }
 
 function userDelete(){ /////삭제 기능

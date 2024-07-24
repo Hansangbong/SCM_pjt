@@ -16,6 +16,7 @@
 	$(function() {
 		chart()
 		registerBtnEvent()
+		dateCheck()
 	})
 	function registerBtnEvent(){
 		$("#searchBtn").click(function(e){
@@ -84,6 +85,24 @@
 		callAjax("/executives/chart.do", "post", "json", false, param,
 				callBackFunction);
 	}
+	
+	function dateCheck(){
+		$('input[type=date][name="searchEdDate"]').change(function(){
+			if($("#searchStDate").val() > $("#searchEdDate").val()){
+				alert("날짜 설정을 확인하세요");
+				$("#searchEdDate").val(null);
+			}
+		}) 
+		$('input[type=date][name="searchStDate"]').change(function(){
+			if($("#searchEdDate").val()){
+				if($("#searchStDate").val() > $("#searchEdDate").val()){
+					alert("날짜 설정을 확인하세요");
+					$("#searchEdDate").val(null);
+				}			
+			}
+		}) 
+	} 
+	
 </script>
 </head>
 <body>

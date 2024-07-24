@@ -767,6 +767,30 @@ public class ManagementController {
 		return resultMap;
 	}
 	
+	@RequestMapping("productUpdate.do")
+	@ResponseBody
+	public Map<String, Object> productUpdate(@RequestParam Map<String, Object> paramMap, HttpServletRequest request,
+			HttpServletResponse response, HttpSession session) throws Exception {
+		logger.info("+ Start " + className + ".productUpdate");
+		logger.info("   - paramMap : " + paramMap);
+
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		int result = 0;
+		String returnMsg = "";
+
+		result = managementService.productUpdate(paramMap);
+
+		if (result > 0) {
+			returnMsg = "success";
+		} else {
+			returnMsg = "fail";
+		}
+
+		resultMap.put("result", returnMsg);
+
+		return resultMap;
+	}
+	
 	@RequestMapping("productDelete.do")
 	@ResponseBody
 	public Map<String, Object> productDelete(@RequestParam Map<String, Object> paramMap, HttpServletRequest request,

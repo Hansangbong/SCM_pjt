@@ -11,23 +11,34 @@
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 
 <script type="text/javascript">
+
+
+	var pageSize = 5;
+	var pageBlockPage = 10;
+
 	$(document).ready(function() {
 		returnList();//반품내역 조회
 		searchBtnEvent();//검색버튼 조회결과
 		
+		$("#searchBtn").click(function(e){
+			e.preventDefault();
+			returnList();
+		});
 		
 		$("#btnReturninsert").click(function() {
 			insertREDelivery(); // 함수 호출
 	    });
+		
+		changeEvent();
+		$("#btnReturnUpdate").click(function() {
+			returnUpdate();
+		})
+		
 		$("#btnReturnClose").click(function() {
 			gfCloseModal();
 		})
 		
-		changeEvent();
-		$("#btnReturnUpdate").click(function() {
-			deliveryUpdate();;
-		})
-		
+
 		
 		
 	});
@@ -61,48 +72,26 @@
 		})
 	}
 	
-	function returnList() {
+	//첫화면 조회 + 페이징 처리
+	function returnList(cpage) {
+		
+		cpage = cpage || 1;
+		
 		let param = {
 				searchTitle : $("#searchTitle").val(),
 				searchStDate : $("#searchStDate").val(),
 				searchEdDate : $("#searchEdDate").val(),
+				currentPage : cpage,
+				pageSize : pageSize
 		}
 		var callBackFunction = function(res) {
 			$("#returnList").empty().append(res);
+			
 		}
 		callAjax("/business/returnList.do", "post", "text", false, param, callBackFunction);
 	}
 	
-	//모달 띄울때 수정인지, 작성인지 파악
-	function finddataStatus()  {
-		let param = {	
-				item_code : $("#re_item_code").text(),
-				//obtain_date : $("#re_obtain_date").text().trim(),
-				return_order_date : $("#re_order_date").text().trim(),
-				seq : $("#re_seq").text()
-		}
 		
-	    var callBackFunction = function(res) {
-		    console.log("반품배송지시서 update=1, insert는 0이여야함 => " +  res); //res.deliverCnt
-
-	        // deliveryCnt 값에 따라 테이블 바디 및 버튼 표시 설정
-	        //res.findstatus
-	        if (res === 0) {
-	            $('#TableInsertOrUpdate').hide(); // 테이블 바디 숨기기
-	            $('#btnReturninsert').show(); // 작성 버튼 보이기
-	            $('#btnReturnUpdate').hide(); // 수정 버튼 숨기기
-	        } else {
-	            $('#TableInsertOrUpdate').show(); // 테이블 바디 보이기
-	            $('#btnReturninsert').hide(); // 작성 버튼 숨기기
-	            $('#btnReturnUpdate').show(); // 수정 버튼 보이기
-                //updateDeliveryTable(res.deliveryUpdates); // 동적 테이블 업데이트
-            }
-	    };
-	    
-	    callMyAjax("/business/findstatus_Return.do", "POST", "json", true, param, callBackFunction);
-	}
-	
-	//모달 띄우고 수정인 경우에 값들 박아주기
 	//배송지시서 모달에서 값 바꿔주기(input 수정시에)
 	function changeEvent(){
 		 $('#select_storage').change(function() {
@@ -145,10 +134,13 @@
 		    $("#re_endloc").text(parentRow14);									
 		    
 		    findStorage();
-		    
 		    findDeliveryMan();
-		    //finddataStatus();
-		    //selectDeliveryModal();
+		    findreturnStatus();
+		    selectDeliveryModal();
+		    
+		    $("#select_storage").empty();
+	        $("#select_storage_count").val('');
+	        $("#deliveryNum").empty();
 		    
 		gfModalPop("#returnInsertModal");
 	}
@@ -178,21 +170,8 @@
 	            $("#select_storage").change(function() {
 	                var selectedStorage = $(this).val();
 	                var selectedStorageCount = 0;
-	                /*
-	                // 선택한 창고의 재고 수량을 찾아서 입력
-	                res.forEach(function(getStorageList) {
-	                    if (getStorageList.storage_name === selectedStorage) {
-	                        selectedStorageCount = getStorageList.inventory_count;
-	                        return false; // 반복문 종료
-	                    }
-	                });
-	                // 재고 수량을 input 필드에 입력
-	                $("#select_storage_count").val(selectedStorageCount);
-	                */
 	            });
 	        });
-	        //getStorageList.inventory_count=10
-	        //$('select_storage_count')
 		}
 	    callMyAjax("/business/findStorage.do", "POST", "json", true, param, callBackFunction);
 	}
@@ -226,10 +205,9 @@
 			    obtain_count: $('#re_count').text(),
 			    delivery_name: $('#insert_deliveryName').val(),
 			    item_code : $('#re_item_code').text(),
-			    storage_code : $('#select_storage').val(),
+			    storage_name : $('#select_storage').val(),
 			    seq : $('#re_seq').text()
 	    };
-	    console.log('제발!!!!!!!!!!!!!!!!!!!!!!!! obtain_date:', data.obtain_date); // obtain_date 값을 콘솔에 출력
 
 	    $.ajax({
 	        url: '/business/RE_deliveryInsert.do', // 실제 서버의 URL
@@ -240,8 +218,10 @@
 	            if (response === 1) {
 	                alert('배송지시서 등록 성공하였습니다.');
 	                location.reload(); // 예시로 페이지 리로드
+	                //작성버튼X
 	            } else {
 	                alert('배송지시서 등록 실패하였습니다.');
+	            	//수정버튼 보이고
 	            }
 	        },
 	        error: function(xhr, status, error) {
@@ -250,26 +230,90 @@
 	    });
 	}
 	
-	/*
-	//배송지시서 업데이트 할거임 => 모달창 띄울때 넣어주면 됨
+	
+	//모달 띄울때 수정인지, 작성인지 파악
+	function findreturnStatus()  {
+		let param = {	
+				seq : $("#re_seq").text(),
+		}
+		
+	    var callBackFunction = function(res) {
+		    console.log("반품배송지시서 update=1, insert는 0이여야함 => " +  res); //res.deliverCnt
+			console.log("좀 제대로 받아줘라 임마 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	        // deliveryCnt 값에 따라 테이블 바디 및 버튼 표시 설정
+	        //res.findstatus
+	        if (res === 0) {
+	            $('#TableInsertOrUpdate').hide(); // 테이블 바디 숨기기
+	            $('#btnReturninsert').show(); // 작성 버튼 보이기
+	            $('#btnReturnUpdate').hide(); // 수정 버튼 숨기기
+	        } else {
+	            $('#TableInsertOrUpdate').show(); // 테이블 바디 보이기
+	            $('#btnReturninsert').hide(); // 작성 버튼 숨기기
+	            $('#btnReturnUpdate').show(); // 수정 버튼 보이기
+                //updateDeliveryTable(res.deliveryUpdates); // 동적 테이블 업데이트
+            }
+	    };
+	    
+	    callMyAjax("/business/return_findstatusn.do", "POST", "json", true, param, callBackFunction);
+	}
+
+	//모달 => 수정버튼 update
+	function returnUpdate() {
+    if ($("#changeDeliveryName").text() === '' || $("#changeDeliveryName").text() === null || 
+        $("#changestorageName").text() === '' || $("#changestorageName").text() === null) {
+        alert('배송담당자와 창고이름을 확인해주세요');
+        return;  // 함수 종료
+    }
+
+    let param = {
+        delivery_num: $("#up_delivery_num").text(),
+        delivery_name: $("#changeDeliveryName").text(),
+        storage_name: $("#changestorageName").text()
+    };
+
+    let callBackFunction = function(res) {
+        if(res === 0) {
+            alert('수정에 실패하였습니다.');
+            location.reload();
+        } else {
+            alert('수정에 성공하였습니다.');
+            location.reload();
+        }
+    };
+
+    callMyAjax("/business/deliveryUpdate.do", "POST", "json", true, param, callBackFunction);
+}
+	
+	
+	
+	//배송지시서 1row select 할거임 => 모달창 띄울때 넣어주면 됨
 	   function selectDeliveryModal() {
 		    let param = {  
 		        item_code: $("#re_item_code").text(),
-		        obtain_date: $("#re_obtain_date").text().trim()
+		        obtain_date: $("#re_obtain_date").text().trim(),
+		    	seq : $("#re_seq").text(),
 		    };
 
 		    // AJAX 호출 후 서버로부터 데이터를 받아 처리할 콜백 함수
 		    let callBackFunction = function(response) {
 		        console.log("서버에서 받은 데이터:", response);
+		        
 		        let tableBody = '';
 		        if (response.length > 0) { // 배열의 길이 확인
 		            let re_deliveryData = response[0]; // 첫 번째 객체 선택
+		            
+		         // delivery_date 형식화
+		            let formattedDate = new Date(re_deliveryData.delivery_date).toLocaleDateString('ko-KR', {
+		                year: 'numeric',
+		                month: '2-digit',
+		                day: '2-digit'
+		            });
 		            tableBody += '<tr>';
-		            tableBody += '<td id="up_delivery_num">' + deliveryData.delivery_num + '</td>';
-		            tableBody += '<td>' + re_deliveryData.delivery_dateFMT + '</td>';
-		            tableBody += '<td>' + deliveryData.storage_name + ', ' + deliveryData.storage_loc + '</td>';
-		            tableBody += '<td id="changeDeliveryName">' + re_deliveryData.delivery_name + '</td>';
+		            tableBody += '<td id="up_delivery_num">' + re_deliveryData.delivery_num + '</td>';
+		            tableBody += '<td>' + formattedDate + '</td>';
+		            tableBody += '<td>' + re_deliveryData.delivery_end_loc + '</td>';
 		            tableBody += '<td id="changestorageName">' + re_deliveryData.storage_name + '</td>';
+		            tableBody += '<td id="changeDeliveryName">' + re_deliveryData.delivery_name + '</td>';
 		            tableBody += '</tr>';
 		        } else {
 		            tableBody += '<tr><td colspan="6">데이터가 없습니다.</td></tr>';
@@ -277,10 +321,9 @@
 		        $('#deliveryTableBody').html(tableBody); // 테이블 업데이트
 		    };
 		    // AJAX 호출
-		    callMyAjax("/business/deliveryReSelectUpdate.do", "POST", "json", true, param, callBackFunction);
+		    callMyAjax("/business/return_deliverySelect.do", "POST", "json", true, param, callBackFunction);
 		}
 	
-	*/
 
 
 </script> 
@@ -312,8 +355,12 @@
 						
 					<p class="conTitle">
 						<span>거래내역</span> 
-						<span class="fr">					
-                          <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
+						<span class="fr">
+                          반품제품명 <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
+						  기간
+                          <input type="date" id="searchStDate" name="searchStDate" style="height: 25px; margin-right: 10px;"/> 
+                          ~ 
+                          <input type="date" id="searchEdDate" name="searchEdDate" style="height: 25px; margin-right: 10px;"/>
 						  <a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
 						</span>
 					</p> 
@@ -326,14 +373,14 @@
 		                            <colgroup>
 						                   <col width="80px">
 						                   <col width="50px">
+						                   <col width="85px">
+						                   <col width="120px">
+						                   <col width="120px">
 						                   <col width="100px">
-						                   <col width="150px">
-						                   <col width="50px">
-						                   <col width="70px">
-						                   <col width="70px">
-						                   <col width="70px">
+						                   <col width="80px">
+						                   <col width="90px">
 						                   <col width="100px">
-						                   <col width="100px">
+						                   <col width="120px">
 					                 </colgroup>
 								<thead>
 									<tr>
@@ -369,7 +416,6 @@
 		</div>
 	</div>
 
-
 	<!-- 반품 배송 모달팝업 -->
  		<div id="returnInsertModal" class="layerPop layerType2" style="width:60rem; height: 25rem;">
 			<dl>
@@ -391,8 +437,6 @@
 							</thead>
 							<tbody id = ''>
 								<tr>
-								
-									<td style="display:none" id = 're_seq'></td>
 									<td  style="display:none" id = 're_order_date'></td>
 									<td  style="display:none" id = 're_endloc'></td>
 									<td id = 're_obtain_date'></td>
@@ -410,7 +454,8 @@
 										</select>
 									</td>
 									<td id = 're_item_code'></td>
-									<td id = 're_cust_addr'></td>
+									<td style="display:none" id = 're_cust_addr'></td>
+									<td style="display:none" id = 're_seq'></td>
 								</tr>
 							</tbody>
 						</table>
@@ -425,9 +470,9 @@
 								<tr>
 									<th scope='col'>배송번호</th>
 									<th scope='col'>배송일자</th>
-									<th scope='col'>출발지역</th>
+									<th scope='col'>출발지</th>
+									<th scope='col'>도착지</th>
 									<th scope='col'>배송담당자</th>
-									<th scope='col'>배송창고</th>
 								</tr>
 							</thead>
 							<tbody id = "deliveryTableBody">

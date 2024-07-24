@@ -2,9 +2,9 @@
 	pageEncoding="UTF-8"%>
 
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
+	
 		$.ajax({
 			url : "/order/orderList.do",
 			type : "post",

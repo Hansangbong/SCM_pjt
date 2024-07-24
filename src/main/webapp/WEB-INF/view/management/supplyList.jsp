@@ -19,7 +19,12 @@
                 <tr>
                     <td class="custDetailView" data-custid2="${list.cust_id}"><a style="cursor:pointer;">${list.cust_name}</a></td>
                     <td>${list.loginID}</td>
-                    <td>${list.password}</td>
+                    <c:if  test="${list.password != '' && list.password != null  }" >
+                		<td>*********</td>
+                	</c:if>
+                	<c:if  test="${list.password == '' || list.password eq null  }" >
+                		<td>${list.password }</td>
+                	</c:if>
                     <td>${list.cust_person}</td>
                     <td>${list.cust_person_ph}</td>
                 </tr>

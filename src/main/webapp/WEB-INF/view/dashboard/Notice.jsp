@@ -8,444 +8,407 @@
 <jsp:include page="/WEB-INF/view/common/common_include.jsp"></jsp:include>
 
 <script type="text/javascript">
-	
-	var pageSize = 5;
-	var pageBlockPage = 10;
-	
-	$(function(){
+
+var pageSize = 5;
+var pageBlockPage = 10;
+
+$(function(){
+	noticeSearch();
+	registerBtnEvent();
+	filePreview();
+})
+
+function registerBtnEvent(){
+	$("#searchBtn").click(function(e){
+		e.preventDefault();
 		noticeSearch();
-		registerBtnEvent();
-		filePreview();
-	})
+	});
 	
-	function registerBtnEvent(){
-		$("#searchBtn").click(function(e){
-			e.preventDefault();
-			noticeSearch();
-		});
+	$("a[name=btn]").click(function(e){
+		e.preventDefault();
 		
-		$("a[name=btn]").click(function(e){
-			e.preventDefault();
-			
-			var btnId = $(this).attr("id");
-			
-			switch(btnId){
-				case "btnSaveNotice":
-					saveNotice();
-					break;
-				case "btnUpdateNotice":
-					updateNotice();
-					break;
-				case "btnDeleteNotice":
-					deleteNotice();
-					break;
-				case "btnClose":
-					gfCloseModal();
-					break;
-				case "btnSavefile":
-					saveFileNotice();
-					break;
-				case "btnUpdatefile":
-					updateFileNotice();
-					break;
-				case "btnDeletefile":
-					deleteFileNotice();
-					break;
-			}
-			
-			
-		})
-	}
-	
-	function noticeSearch(cpage){
-		cpage = cpage || 1;
+		var btnId = $(this).attr("id");
 		
-		// 공지사항 데이터 보여주는 로직
-		var param = {
-				searchTitle : $("#searchTitle").val(),
-				searchStDate : $("#searchStDate").val(),
-				searchEdDate : $("#searchEdDate").val(),
-				currentPage : cpage,
-				pageSize : pageSize
-		};
-		
-		var callBackFunction = function(response){
-			$("#noticeList").empty().append(response);
-			
-			var pagieNavigateHtml = getPaginationHtml(cpage, $("#totcnt").val(), pageSize, pageBlockPage, "noticeSearch")
-			$("#pagingNavi").empty().append(pagieNavigateHtml);
-			$("#currentPage").val(cpage);
+		switch(btnId){
+			case "btnSaveNotice":
+				saveNotice();
+				break;
+			case "btnUpdateNotice":
+				updateNotice();
+				break;
+			case "btnDeleteNotice":
+				deleteNotice();
+				break;
+			case "btnClose":
+				gfCloseModal();
+				break;
+			case "btnSavefile":
+				saveFileNotice();
+				break;
+			case "btnUpdatefile":
+				updateFileNotice();
+				break;
+			case "btnDeletefile":
+				deleteFileNotice();
+				break;
 		}
 		
-		callAjax("/board/noticeList.do", "post", "text", false, param, callBackFunction);
+		
+	})
+}
+
+function noticeSearch(cpage){
+	cpage = cpage || 1;
+	
+	// 공지사항 데이터 보여주는 로직
+	var param = {
+			searchTitle : $("#searchTitle").val(),
+			searchStDate : $("#searchStDate").val(),
+			searchEdDate : $("#searchEdDate").val(),
+			currentPage : cpage,
+			pageSize : pageSize
+	};
+	
+	var callBackFunction = function(response){
+		$("#noticeList").empty().append(response);
+		
+		var pagieNavigateHtml = getPaginationHtml(cpage, $("#totcnt").val(), pageSize, pageBlockPage, "noticeSearch")
+		$("#pagingNavi").empty().append(pagieNavigateHtml);
+		$("#currentPage").val(cpage);
 	}
 	
-	function insertModal(){
-		// 모달 열어주는 함수
-		$("#loginId").val("");
-		$("#noticeTitle").val("");
-		$("#noticeContent").val("");
-		$("#noticeSeq").val("");
-		$("#btnUpdateNotice").hide();
-		$("#btnSaveNotice").show();
-		$("#btnDeleteNotice").hide();
+	callAjax("/board/noticeList.do", "post", "text", false, param, callBackFunction);
+}
+
+function insertModal(){
+	// 모달 열어주는 함수
+	$("#loginId").val("");
+	$("#noticeTitle").val("");
+	$("#noticeContent").val("");
+	$("#noticeSeq").val("");
+	$("#btnUpdateNotice").hide();
+	$("#btnSaveNotice").show();
+	$("#btnDeleteNotice").hide();
+	
+	gfModalPop("#noticeInsertModal");
+}
+
+function saveNotice(){
+	if(!fValidate()){
+		return;
+	}
+	var param = {
+			title : $("#noticeTitle").val(),
+			content : $("#noticeContent").val(),
+			noticeSeq: $("#noticeSeq").val()
+	}
+	
+	var callBackFunction = function(response){
+		if(response.result == "success"){
+			alert("저장이 되었습니다");
+			gfCloseModal();
+			noticeSearch();
+		}
+	}
+	
+	callAjax("/board/noticeSave.do", "post", "json", false, param, callBackFunction);
+}
+
+function updateNotice(){
+	if(!fValidate()){
+		return;
+	}
+	
+	var param = {
+			title : $("#noticeTitle").val(),
+			content : $("#noticeContent").val(),
+			noticeSeq: $("#noticeSeq").val()
+	}
+	
+	var callBackFunction = function(response){
+		if(response.result == "success"){
+			alert("수정이 되었습니다");
+			gfCloseModal();
+			noticeSearch($("#currentPage").val());
+		}
+	}
+	
+	callAjax("/board/noticeUpdate.do", "post", "json", false, param, callBackFunction);
+}
+
+function noticeDetailModal(seq){
+	var param = {
+			noticeSeq: seq
+	}
+	
+	var callBackFunction = function(data){
+		var detail = data.detailValue;
+		
+		$("#loginId").val(detail.loginID);
+		$("#noticeTitle").val(detail.noti_title);
+		$("#noticeContent").val(detail.noti_content);
+		$("#noticeSeq").val(detail.noti_seq);
+		$("#noticeContent").val(detail.noti_content);
+		$("#noticeSeq").val(detail.noti_seq);
+		$("#btnUpdateNotice").show();
+		$("#btnSaveNotice").hide();
+		$("#btnDeleteNotice").show();
 		
 		gfModalPop("#noticeInsertModal");
 	}
 	
-	function saveNotice(){
-		if(!fValidate()){
-			return;
-		}
-		var param = {
-				title : $("#noticeTitle").val(),
-				content : $("#noticeContent").val(),
-				noticeSeq: $("#noticeSeq").val()
-		}
-		
-		var callBackFunction = function(response){
-			if(response.result == "success"){
-				alert("저장이 되었습니다");
-				gfCloseModal();
-				noticeSearch();
-			}
-		}
-		
-		callAjax("/board/noticeSave.do", "post", "json", false, param, callBackFunction);
-	}
-	
-	function updateNotice(){
-		if(!fValidate()){
-			return;
-		}
-		
-		var param = {
-				title : $("#noticeTitle").val(),
-				content : $("#noticeContent").val(),
-				noticeSeq: $("#noticeSeq").val()
-		}
-		
-		var callBackFunction = function(response){
-			if(response.result == "success"){
-				alert("수정이 되었습니다");
-				gfCloseModal();
-				noticeSearch($("#currentPage").val());
-			}
-		}
-		
-		callAjax("/board/noticeUpdate.do", "post", "json", false, param, callBackFunction);
-	}
-	
-	function noticeDetailModal(seq){
-		var param = {
-				noticeSeq: seq
-		}
-		
-		var callBackFunction = function(data){
-			var detail = data.detailValue;
-			
-			$("#loginId").val(detail.loginID);
-			$("#noticeTitle").val(detail.noti_title);
-			$("#noticeContent").val(detail.noti_content);
-			$("#noticeSeq").val(detail.noti_seq);
-			$("#noticeContent").val(detail.noti_content);
-			$("#noticeSeq").val(detail.noti_seq);
-			$("#btnUpdateNotice").show();
-			$("#btnSaveNotice").hide();
-			$("#btnDeleteNotice").show();
-			
-			gfModalPop("#noticeInsertModal");
-		}
-		
-		callAjax("/board/noticeDetail.do", "post", "json", false, param, callBackFunction);
-	}
-	
+	callAjax("/board/noticeDetail.do", "post", "json", false, param, callBackFunction);
+}
 
-	
-	function deleteNotice(){
-		var param = {
-				noticeSeq: $("#noticeSeq").val()
-		}
-		
-		var callBackFunction = function(data){
-			if(data.result == "success"){
-				alert("삭제 되었습니다");
-				gfCloseModal();
-				noticeSearch();
-			}
-		}
-		
-		callAjax("/board/noticeDelete.do", "post", "json", false, param, callBackFunction);
-	}
-	
-	function fValidate() {
-		var chk = checkNotEmpty(
-				[
-						[ "noticeTitle", "제목를 입력해 주세요." ]
-					,	[ "noticeContent", "내용을 입력해 주세요" ]
-				]
-		);
-		if (!chk) {
-			return;
-		}
 
-		return true;
+
+function deleteNotice(){
+	var param = {
+			noticeSeq: $("#noticeSeq").val()
 	}
 	
+	var callBackFunction = function(data){
+		if(data.result == "success"){
+			alert("삭제 되었습니다");
+			gfCloseModal();
+			noticeSearch();
+		}
+	}
 	
-	// ------------------------------파일 기능 -----------------------------------------------------//
-	function insertFileModal(){
-		$("#loginId").val("");
-		$("#fileTitle").val("");
-		$("#fileContent").val("");
-		$("#noticeSeq").val("");
-		$("#btnUpdatefile").hide();
-		$("#btnSavefile").show();
-		$("#btnDeletefile").hide();
-		$("#preview").empty();
-		$("#fileInput").val("")
+	callAjax("/board/noticeDelete.do", "post", "json", false, param, callBackFunction);
+}
+
+function fValidate() {
+	var chk = checkNotEmpty(
+			[
+					[ "noticeTitle", "제목를 입력해 주세요." ]
+				,	[ "noticeContent", "내용을 입력해 주세요" ]
+			]
+	);
+	if (!chk) {
+		return;
+	}
+
+	return true;
+}
+
+
+// ------------------------------파일 기능 -----------------------------------------------------//
+function insertFileModal(){
+	$("#loginId").val("");
+	$("#fileTitle").val("");
+	$("#fileContent").val("");
+	$("#noticeSeq").val("");
+	$("#btnUpdatefile").hide();
+	$("#btnSavefile").show();
+	$("#btnDeletefile").hide();
+	$("#preview").empty();
+	$("#fileInput").val("")
+	
+	gfModalPop("#filePopUp");
+}
+
+function filePreview(){
+	$("#fileInput").change(function(e){
+		e.preventDefault();
 		
+		// 파일이 있는 경우
+		if($(this)[0].files[0]){
+			var fileInfo = $("#fileInput").val();
+			var fileInfoSplit = fileInfo.split(".");
+			var fileLowerCase = fileInfoSplit[1].toLowerCase();
+			
+			var imgPath = "";
+			var previewHtml = "";
+			
+			if(fileLowerCase == "jpg" || fileLowerCase == "gif" || fileLowerCase == "png"){
+				// 파일이 이미지 일 경우
+				imgPath = window.URL.createObjectURL($(this)[0].files[0]);
+				
+				previewHtml = "<img src='" + imgPath + "' id='imgFile' style='width: 100px; height: 100px;' />";	
+			} else {
+				// 파일이 이미지가 아닌 다른 것일 경우
+				previewHtml = "";
+			}
+			$("#preview").empty().append(previewHtml)
+		}
+	});
+}
+
+function fValidatefile() {
+	var chk = checkNotEmpty(
+			[
+					[ "fileTitle", "제목를 입력해 주세요." ]
+				,	[ "fileContent", "내용을 입력해 주세요" ]
+			]
+	);
+	if (!chk) {
+		return;
+	}
+	return true;
+}
+
+// 파일 저장
+function saveFileNotice(){
+	if(!fValidatefile()){
+		return;
+	}
+	
+	var getForm = document.getElementById("noticeForm");
+	getForm.entype = 'multipart/form-data';
+	var fileData = new FormData(getForm);
+	
+	var callBackFunction = function(data){
+		if(data.result == "success"){
+			alert("저장이 되었습니다");
+			gfCloseModal();
+			noticeSearch();
+		}
+	}
+	
+	callAjaxFileUploadSetFormData("/board/noticeSaveFile.do", "post", "json", false, fileData, callBackFunction);
+}
+
+function noticeDetailFileModal(noticeSeq){
+	var param = {
+			noticeSeq : noticeSeq
+	}
+	
+	var callBackFunction = function(data){
+		$("#noticeSeq").val(data.detailValue.noti_seq);
+		detailModalSetting(data.detailValue);
 		gfModalPop("#filePopUp");
 	}
 	
-	function filePreview(){
-		$("#fileInput").change(function(e){
-			e.preventDefault();
-			
-			// 파일이 있는 경우
-			if($(this)[0].files[0]){
-				var fileInfo = $("#fileInput").val();
-				var fileInfoSplit = fileInfo.split(".");
-				var fileLowerCase = fileInfoSplit[1].toLowerCase();
-				
-				var imgPath = "";
-				var previewHtml = "";
-				
-				if(fileLowerCase == "jpg" || fileLowerCase == "gif" || fileLowerCase == "png"){
-					// 파일이 이미지 일 경우
-					imgPath = window.URL.createObjectURL($(this)[0].files[0]);
-					
-					previewHtml = "<img src='" + imgPath + "' id='imgFile' style='width: 100px; height: 100px;' />";	
-				} else {
-					// 파일이 이미지가 아닌 다른 것일 경우
-					previewHtml = "";
-				}
-				$("#preview").empty().append(previewHtml)
-			}
-		});
-	}
-	
-	function fValidatefile() {
-		var chk = checkNotEmpty(
-				[
-						[ "fileTitle", "제목를 입력해 주세요." ]
-					,	[ "fileContent", "내용을 입력해 주세요" ]
-				]
-		);
-		if (!chk) {
-			return;
-		}
-		return true;
-	}
-	
-	// 파일 저장
-	function saveFileNotice(){
-		if(!fValidatefile()){
-			return;
-		}
-		
-		var getForm = document.getElementById("noticeForm");
-		getForm.entype = 'multipart/form-data';
-		var fileData = new FormData(getForm);
-		
-		var callBackFunction = function(data){
-			if(data.result == "success"){
-				alert("저장이 되었습니다");
-				gfCloseModal();
-				noticeSearch();
-			}
-		}
-		
-		callAjaxFileUploadSetFormData("/board/noticeSaveFile.do", "post", "json", false, fileData, callBackFunction);
-	}
-	
-	function noticeDetailFileModal(noticeSeq){
-		var param = {
-				noticeSeq : noticeSeq
-		}
-		
-		var callBackFunction = function(data){
-			$("#noticeSeq").val(data.detailValue.noti_seq);
-			detailModalSetting(data.detailValue);
-			gfModalPop("#filePopUp");
-		}
-		
-		callAjax("/board/noticeDetail.do", "post", "json", false, param, callBackFunction);
-	}
-	
-	function detailModalSetting(detail){
-		// 상세조회 => 파일이 있을 경우(이미지) => 미리보기
-		if(detail != null){
-			$("#fileTitle").val(detail.noti_title);
-			$("#fileContent").val(detail.noti_content);
-			$("#btnSavefile").hide();
-			$("#btnUpdatefile").show();
-			$("#btnDeletefile").show();
-			
-			if(detail.file_name != null){
-				var ext = detail.file_ext.toLowerCase();
-				var imagePath = "";
-				var previewHtml = "";
-				
-				if(ext == "jpg" || ext == "gif" || ext == "png"){
-					imagePath = detail.logical_path;
-					
-					previewHtml = "<a href='javascript:download()'>";
-					previewHtml += "<img src='" + imagePath + "' id='imgFile' style='width: 100px; height: 100px;' />";	
-					previewHtml += "</a>";
-				} else {
-					previewHtml = "<a href='javascript:download()'>";
-					previewHtml += detail.file_name;
-					previewHtml += "</a>";
-				}
-				
-				$("#preview").empty().append(previewHtml);
-				$("#fileInput").val("");
-			}
-		}
-	}
-	
-	function updateFileNotice(){
-		if(!fValidatefile()){
-			return;
-		}
-		
-		var getForm = document.getElementById("noticeForm");
-		getForm.entype = 'multipart/form-data';
-		var fileData = new FormData(getForm);
-		
-		var callBackFunction = function(data){
-			if(data.result == "success"){
-				alert("저장이 되었습니다");
-				gfCloseModal();
-				noticeSearch($("#currentPage").val());
-			}
-		};
-		
-		callAjaxFileUploadSetFormData("/board/noticeUpdateFile.do", "post", "json", false, fileData, callBackFunction);
-	}
-	
-	function deleteFileNotice(){
-		var param = {
-				noticeSeq: $("#noticeSeq").val()
-		}
-		
-		var callBackFunction = function(data){
-			if(data.result == "success"){
-				alert("삭제 되었습니다");
-				gfCloseModal();
-				noticeSearch();
-			}
-		}
-		
-		callAjax("/board/noticeDelete.do", "post", "json", false, param, callBackFunction);
-	}
-	
-	// 파일 다운로드
-	function download(){
-		var noticeSeq = $("#noticeSeq").val();
-		
-		var params = "<input type='hidden' name='noticeSeq' value='"+ noticeSeq +"' />";
+	callAjax("/board/noticeDetail.do", "post", "json", false, param, callBackFunction);
+}
 
-		$("<form action='noticeDownload.do' method='post' id='fileDownload'>" + params + "</form>"
-		).appendTo('body').submit().remove();
+function detailModalSetting(detail){
+	// 상세조회 => 파일이 있을 경우(이미지) => 미리보기
+	if(detail != null){
+		$("#fileTitle").val(detail.noti_title);
+		$("#fileContent").val(detail.noti_content);
+		$("#btnSavefile").hide();
+		$("#btnUpdatefile").show();
+		$("#btnDeletefile").show();
+		
+		if(detail.file_name != null){
+			var ext = detail.file_ext.toLowerCase();
+			var imagePath = "";
+			var previewHtml = "";
+			
+			if(ext == "jpg" || ext == "gif" || ext == "png"){
+				imagePath = detail.logical_path;
+				
+				previewHtml = "<a href='javascript:download()'>";
+				previewHtml += "<img src='" + imagePath + "' id='imgFile' style='width: 100px; height: 100px;' />";	
+				previewHtml += "</a>";
+			} else {
+				previewHtml = "<a href='javascript:download()'>";
+				previewHtml += detail.file_name;
+				previewHtml += "</a>";
+			}
+			
+			$("#preview").empty().append(previewHtml);
+			$("#fileInput").val("");
+		}
 	}
+}
+
+function updateFileNotice(){
+	if(!fValidatefile()){
+		return;
+	}
+	
+	var getForm = document.getElementById("noticeForm");
+	getForm.entype = 'multipart/form-data';
+	var fileData = new FormData(getForm);
+	
+	var callBackFunction = function(data){
+		if(data.result == "success"){
+			alert("저장이 되었습니다");
+			gfCloseModal();
+			noticeSearch($("#currentPage").val());
+		}
+	};
+	
+	callAjaxFileUploadSetFormData("/board/noticeUpdateFile.do", "post", "json", false, fileData, callBackFunction);
+}
+
+function deleteFileNotice(){
+	var param = {
+			noticeSeq: $("#noticeSeq").val()
+	}
+	
+	var callBackFunction = function(data){
+		if(data.result == "success"){
+			alert("삭제 되었습니다");
+			gfCloseModal();
+			noticeSearch();
+		}
+	}
+	
+	callAjax("/board/noticeDelete.do", "post", "json", false, param, callBackFunction);
+}
+
+// 파일 다운로드
+function download(){
+	var noticeSeq = $("#noticeSeq").val();
+	
+	var params = "<input type='hidden' name='noticeSeq' value='"+ noticeSeq +"' />";
+
+	$("<form action='noticeDownload.do' method='post' id='fileDownload'>" + params + "</form>"
+	).appendTo('body').submit().remove();
+}
 </script> 
 
 	
-			
-				
-			
-					<!-- contents -->
-					<h3 class="hidden">contents 영역</h3> <!-- content -->
-				
-						
-						
-					<p class="conTitle">
-						<span>공지사항</span> 
-						<span class="fr">					
- 	                         	 제목
-                          <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
-                          	기간
-                          <input type="date" id="searchStDate" name="searchStDate" style="height: 25px; margin-right: 10px;"/> 
-                          ~ 
-                          <input type="date" id="searchEdDate" name="searchEdDate" style="height: 25px; margin-right: 10px;"/>
-						  <a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
-						  <a class="btnType blue" href="javascript:insertModal();" name="modal"><span>신규</span></a>
-						  <a class="btnType blue" href="javascript:insertFileModal();" name="modal"><span>신규(파일)</span></a>
-						</span>
-					</p> 
-						
-						
-						<div class="divNoticeList">
-							<table class="col">
-								<caption>caption</caption>
-		                            <colgroup>
-						                   <col width="50px">
-						                   <col width="200px">
-						                    <col width="60px">
-						                   <col width="50px">
-					                 </colgroup>
-								<thead>
-									<tr>
-							              <th scope="col">공지 번호</th>
-							              <th scope="col">공지 제목</th>
-							              <th scope="col">공지 날짜</th>
-							              <th scope="col">작성자</th>
-							              
-									</tr>
-								</thead>
-								<tbody id="noticeList">
-										<!-- 갯수가 0인 경우  -->
-									<c:if test="${noticeCnt eq 0 }">
-										<tr>
-											<td colspan="4">데이터가 존재하지 않습니다.</td>
-										</tr>
-									</c:if>
-									
-							
-									<!-- 갯수가 있는 경우  -->
-									<c:if test="${noticeCnt > 0 }">
-										<c:set var="nRow" value="${pageSize*(currentPage-1)}" /> 
-										<c:forEach items="${notice}" var="list">
-											<tr>
-												    <td>${list.noti_seq}</a></td>
-													<%-- <td><a href="javascript:noticeDetailModal(${list.noti_seq});">${list.noti_title}</a></td> --%>
-													<td><a href="javascript:noticeDetailFileModal(${list.noti_seq});">${list.noti_title}</a></td>
-													
-													<td>${list.noti_date}</td>
-													<td>${list.loginID}</td>
-												<!-- List에 있는 js 함수 호출가능 이거 그대로 가지고 가기 때문에 !!  -->
-											</tr>
-											 <c:set var="nRow" value="${nRow + 1}" /> 
-										</c:forEach>
-									</c:if>
-									
-									<!-- 이거 중간에 있으면 table 안먹힘  -->
-							
-							      
-									
-								</tbody>
-							</table>
-							  <input type="hidden" id="totcnt" name="totcnt" value="${noticeCnt}"/>
-							<!-- 페이징 처리  -->
-							
-							<div class="paging_area" id="pagingNavi">
-							</div>
-							<h3 class="hidden">풋터 영역</h3>
-						<jsp:include page="/WEB-INF/view/common/footer.jsp"></jsp:include>				
-						</div>
+<p class="conTitle">
+	<span>공지사항</span> 
+	<span class="fr">					
+                      	 제목
+                     <input type="text" id="searchTitle" name="searchTitle" style="height: 25px; margin-right: 10px;"/>
+                     	기간
+                     <input type="date" id="searchStDate" name="searchStDate" style="height: 25px; margin-right: 10px;"/> 
+                     ~ 
+                     <input type="date" id="searchEdDate" name="searchEdDate" style="height: 25px; margin-right: 10px;"/>
+	  <a class="btnType red" href="" name="searchbtn"  id="searchBtn"><span>검색</span></a>
+	  <a class="btnType blue" href="javascript:insertModal();" name="modal"><span>신규</span></a>
+	  <a class="btnType blue" href="javascript:insertFileModal();" name="modal"><span>신규(파일)</span></a>
+	</span>
+</p> 
 	
+	
+	<div class="divNoticeList">
+		<table class="col">
+			<caption>caption</caption>
+                         <colgroup>
+	                   <col width="50px">
+	                   <col width="200px">
+	                    <col width="60px">
+	                   <col width="50px">
+                 </colgroup>
+			<thead>
+				<tr>
+		              <th scope="col">공지 번호</th>
+		              <th scope="col">공지 제목</th>
+		              <th scope="col">공지 날짜</th>
+		              <th scope="col">작성자</th>
+		              
+				</tr>
+			</thead>
+			<tbody id="noticeList">
+					<!-- 갯수가 0인 경우  -->			
+			</tbody>
+		</table>
+		  <input type="hidden" id="totcnt" name="totcnt" value="${noticeCnt}"/>
+		<!-- 페이징 처리  -->
+		
+		<div class="paging_area" id="pagingNavi">
+		</div>
+		
+	</div>
+
 		
 		
 

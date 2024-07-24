@@ -144,11 +144,21 @@ public class ExecutiveController {
 		logger.info("+ Start " + className + ".orderApproval");
 		logger.info("   - paramMap : " + paramMap);
 		
-		
+		int cpage = Integer.valueOf((String) paramMap.get("currentPage"));
+		int pageSize = Integer.valueOf((String) paramMap.get("pageSize"));
+
+		int startSeq = (cpage - 1) * pageSize;
+
+		paramMap.put("startSeq", startSeq);
+		paramMap.put("pageSize", pageSize);
 		
 		List<Map<String, Object>> approvalY = executiveService.orderApprovalY(paramMap);
 		List<Map<String, Object>> approvalN = executiveService.orderApprovalN(paramMap);
 		
+		int orderAppPage = executiveService.orderAppPage(paramMap);
+		logger.info("     orderAppPage" + orderAppPage);
+		
+		model.addAttribute("orderAppPage", orderAppPage);
 		if(approvalY != null){			
 			model.addAttribute("Y", approvalY);
 		}
@@ -165,8 +175,21 @@ public class ExecutiveController {
 		logger.info("+ Start " + className + ".returnApproval");
 		logger.info("   - paramMap : " + paramMap);
 		
+		int cpage = Integer.valueOf((String) paramMap.get("currentPage"));
+		int pageSize = Integer.valueOf((String) paramMap.get("pageSize"));
+
+		int startSeq = (cpage - 1) * pageSize;
+
+		paramMap.put("startSeq", startSeq);
+		paramMap.put("pageSize", pageSize);
+		
 		List<Map<String, Object>> approvalY = executiveService.returnApprovalY(paramMap);
 		List<Map<String, Object>> approvalN = executiveService.returnApprovalN(paramMap);
+		
+		int returnAppPage = executiveService.returnAppPage(paramMap);
+		logger.info("     returnAppPage    " + returnAppPage);
+		
+		model.addAttribute("returnAppPage", returnAppPage);
 		
 		if(approvalY != null){			
 			model.addAttribute("Y", approvalY);

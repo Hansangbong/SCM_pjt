@@ -90,13 +90,13 @@ public class BusinessServiceImpl implements BusinessService {
 		logger.info("getDeliveryReModalSelect() : " + paramMap);
 		return businessDao.getDeliveryReModalSelect(paramMap);
 	}
-
+	
 	@Override
 	public Integer Order_findstatus(Map<String, Object> paramMap) {
 		logger.info("findInsertOrUpdateCntRe() : " + paramMap);
 		return businessDao.Order_findstatus(paramMap);
 	}
-
+	
 	@Override
 	public Integer toOrderInsert(Map<String, Object> paramMap) {
 		logger.info("toOrderInsert() : " + paramMap);
@@ -132,5 +132,18 @@ public class BusinessServiceImpl implements BusinessService {
 		return businessDao.getOrderStatus(paramMap);
 	}
 
+	@Override
+	public List<Map<String, Object>> return_deliverySelect(Map<String, Object> paramMap) {
+		logger.info("return_deliverySelectUpdate() : " + paramMap);
+		return businessDao.return_deliverySelect(paramMap);
+	}
+	
+	//페이징관련 모두 여기
+	@Override
+	public int returnListCnt(Map<String, Object> paramMap) {
+		// TODO Auto-generated method stub
+		return businessDao.returnListCnt(paramMap);
+	}
+	
 
 }

@@ -41,6 +41,10 @@ public interface BusinessDao {
 
 	Integer getOrderStatus(Map<String, Object> paramMap);
 
+	List<Map<String, Object>> return_deliverySelect(Map<String, Object> paramMap);
+
+	int returnListCnt(Map<String, Object> paramMap);
+
 
 
 

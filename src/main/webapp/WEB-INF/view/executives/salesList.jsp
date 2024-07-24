@@ -17,8 +17,8 @@
 		       	<td>${object.accounts_receivable } 원</td>
 		        <td>${object.total_sum} 원</td>
 		    </tr>
-		<c:set var="nRow" value="${nRow + 1}" /> 
 		</c:forEach>
+		<c:set var="nRow" value="${nRow + 1}" /> 
 	</c:if>
 
 <input type="hidden" id="totcnt" name="totcnt" value="${salesPage}"/>

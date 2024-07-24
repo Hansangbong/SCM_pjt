@@ -103,7 +103,17 @@ public class ExecutiveServiceImpl implements ExecutiveService{
 		executiveDao.approvalY(paramMap);
 	}
 
+	@Override
+	public int orderAppPage(Map<String, Object> paramMap) {
+		// TODO Auto-generated method stub
+		return executiveDao.orderAppPage(paramMap);
+	}
 
+	@Override
+	public int returnAppPage(Map<String, Object> paramMap) {
+		// TODO Auto-generated method stub
+		return executiveDao.returnAppPage(paramMap);
+	}
 
 
 	

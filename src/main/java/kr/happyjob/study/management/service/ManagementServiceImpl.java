@@ -269,6 +269,12 @@ public class ManagementServiceImpl implements ManagementService {
 	}
 	
 	@Override
+	public int productUpdate(Map<String, Object> paramMap) throws Exception {
+		// TODO Auto-generated method stub
+		return managementDao.productUpdate(paramMap);
+	}
+	
+	@Override
 	public int productDelete(Map<String, Object> paramMap) throws Exception {
 		// TODO Auto-generated method stub
 		return managementDao.productDelete(paramMap);

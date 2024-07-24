@@ -27,6 +27,10 @@ public interface ExecutiveDao {
 
 	public void approvalY(Map<String, Object> paramMap);
 
+	public int orderAppPage(Map<String, Object> paramMap);
+
+	public int returnAppPage(Map<String, Object> paramMap);
+
 	
 
 }

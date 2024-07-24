@@ -29,7 +29,11 @@
 			adrFind();
 		});
 		$("#btnNewStorage").click(function(e){
-			newStorageSave();
+			if($("#storage_name").val() != "" && $("#storage_manager").val() != "" && $("#postCode").val() != "" && $("#address").val() != "" && $("#detailAddress").val() != ""){				
+				newStorageSave();
+			}else{
+				alert("빈칸멈춰!")
+			}
 		});
 	}
 	
@@ -89,6 +93,7 @@
 	}
 	
 	function newStorageSave(){
+		
 		var param = {
 				storage_name : $("#storage_name").val(),
 				storage_loc : $("#address").val(),
@@ -232,10 +237,7 @@
 					</thead>
 					<tbody id="warehouseInven"></tbody>
 				</table>
-				<div class="btn_areaC mt30">
-					<a href="" class="btnType blue" id="btnNewInven" name="btn"><span>저장</span></a>					
-					<a href="" class="btnType gray" id="btnClose" name="btn"><span>취소</span></a>
-				</div>
+				
 			</dd>
 		</dl>
 		<a href="" class="closePop"><span class="hidden">닫기</span></a>
@@ -270,7 +272,7 @@
 							<br>
 							<label>상세주소</label>
 							<input id="detailAddress" >				
-						</div>
+						</div> 
 					</div>				
 				</div>
 				<div class="btn_areaC mt30">

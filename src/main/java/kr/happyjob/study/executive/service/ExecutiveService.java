@@ -26,6 +26,10 @@ public interface ExecutiveService {
 	public List<Map<String, Object>> chart(Map<String, Object> paramMap);
 
 	public int salesPage(Map<String, Object> paramMap);
+
+	public int orderAppPage(Map<String, Object> paramMap);
+
+	public int returnAppPage(Map<String, Object> paramMap);
 	
 	
 

@@ -108,14 +108,17 @@
 									<tr>
 										<th scope="row" >상세 정보</th>
 										<td colspan="5"><textarea id="modaldetail" style="height: 25px; margin-right: 50px;" class="inputTxt p100" colspan="2" cols="40" rows="5"></textarea><br></td>
-										
 									</tr>
 								</tbody>
-            				</table>	
+            				</table>
 							<br>
 							<input type="hidden" id="modalProductCodeOrigin" >
 							<input type="hidden" id="modalProductNameOrigin" >
 							<input type="hidden" id="modalManufacOrigin" >
+							<input type="hidden" id="modalproductValueOrigin" >
+							<input type="hidden" id="modalproductDetailOrigin" >
+							
+				
 						
 							
 							<div class="modal-footer">
@@ -146,7 +149,7 @@ var pageBlockPage = 10;
 
 $(document).ready(function() {
     
-    $("#newRegister").click(function() {
+    $("#newRegister").click(function() { //새 제품등록 버튼 클릭 이벤트
     	$(".btn1").hide();
     	$("#myModal").show();
     	$('#modalProductCode').val('');
@@ -154,6 +157,7 @@ $(document).ready(function() {
     	$('#modalManufac').val('');
     	$('#modalValue').val('');
     	$('#modaldetail').val('');
+    	$('#modalProductCodeOrigin').val('');
     	document.getElementById('productImg').src = '';
     	$("#imageTag").hide();
     });
@@ -177,7 +181,13 @@ $(document).ready(function() {
     });
     
     $(".btn2").click(function() { // 저장버튼
-    	productRegist();
+    	if( $('#modalProductCodeOrigin').val() == ''){
+    		productRegist();
+    	}
+    	else {
+    		productUpdate();
+    	}
+    	
     });
     
      
@@ -186,8 +196,7 @@ $(document).ready(function() {
 
 $(function(){
 	getProductList();
-	//var newSrc="/test.jsp";
-	//document.getElementById('productImg').src = newSrc;
+	
 	
 	
 })
@@ -256,7 +265,7 @@ function detailSearch(cpage){ /////검색 기능
 }
 
 
-function productRegist(){ // 저장 버튼 클릭 시 발동
+function productRegist(){ // 저장 버튼 클릭 시 분기되어 실행됨 (제품 새로 등록)
 	var product_code = $('#modalProductCode').val();
 	var product_name= $('#modalProductName').val();
 	var manufac= $('#modalManufac').val();
@@ -281,7 +290,56 @@ function productRegist(){ // 저장 버튼 클릭 시 발동
 		$("#myModal").hide();
 	}
 	
-	callAjax("/management/productRegist.do", "post", "text", false, param,callBackFunction);
+	if(product_code == '' || product_name == '' || manufac == '' || product_value == '' || product_detail == ''){
+		alert("입력되지 않은 항목이 존재합니다.");
+	}
+	else {
+		callAjax("/management/productRegist.do", "post", "text", false, param,callBackFunction);	
+	}
+}
+
+
+function productUpdate(){ // 저장 버튼 클릭 시 분기되어 발동 (기존 내용 수정)
+	var product_code = $('#modalProductCode').val();
+	var product_name= $('#modalProductName').val();
+	var manufac= $('#modalManufac').val();
+	var product_value= $('#modalValue').val();
+	var product_detail= $('#modaldetail').val();
+	
+	var product_codeOri = $('#modalProductCodeOrigin').val();
+	var product_nameOri= $('#modalProductNameOrigin').val();
+	var manufacOri= $('#modalManufacOrigin').val();
+	var product_valueOri= $('#modalproductValueOrigin').val();
+	var product_detailOri= $('#modalproductDetailOrigin').val();
+	
+	var test1 = product_code != product_codeOri ? product_code : '';
+	var test2 = product_name != product_nameOri ? product_name : '';
+	var test3 = manufac != manufacOri ? manufac : '';
+	var test4 = product_value != product_valueOri ? product_value : '';
+	var test5 = product_detail != product_detailOri ? product_detail : '';
+		
+	
+	var param = {
+			product_code : test1,
+			product_name : test2,
+			manufac : test3,
+			product_value : test4,
+			product_detail : test5,
+			item_code : product_codeOri
+	};
+	
+	var callBackFunction = function(response){
+		alert("수정 됐습니다");
+		$("#myModal").hide();
+	}
+	
+	
+	if(test1 == '' && test2 == '' && test3 == '' && test4 == '' && test5 == ''){//수정된 데이터가 없을 경우
+		alert("수정된 내역이 없습니다.");
+	}
+	else{
+		callAjax("/management/productUpdate.do", "post", "text", false, param,callBackFunction);	
+	}
 }
 
 

@@ -50,6 +50,14 @@ $(document).ready(function() {
 			$("#modalValue").val(productValue);
 			$("#modaldetail").val(productDetail);
 			$("#productImg").val(productPath);
+			
+			$("#modalProductCodeOrigin").val(productCode);
+			$("#modalProductNameOrigin").val(productName);
+			$("#modalManufacOrigin").val(productManufac);
+			$("#modalproductValueOrigin").val(productValue);
+			$("#modalproductDetailOrigin").val(productDetail);
+			
+			
 			document.getElementById('productImg').src = productPath;
 			
 			$(".btn1").show();

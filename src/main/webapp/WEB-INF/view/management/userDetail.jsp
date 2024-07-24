@@ -43,6 +43,9 @@
 											<option value="D">배송 담당자</option>
 											<option value="E">구매 담당자</option>
 										</select>
+										<script>
+        									var itemValue = "${list.user_type}";
+    									</script>
 										</span>
 									</td>
 								</tr>
@@ -72,9 +75,9 @@
 <script>
 $(document).ready(function() {
 	
-    	var jobCode = $(this).val();
     	
-    	$('#jobCode2').val('C');
+    	
+    	$('#jobCode2').val(itemValue);
 	
 
 	$("#ajustBtn").click(function() {

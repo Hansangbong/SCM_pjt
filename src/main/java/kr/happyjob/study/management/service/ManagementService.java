@@ -89,6 +89,8 @@ public interface ManagementService {
 	
 	public int productRegist(Map<String, Object> paramMap) throws Exception;
 	
+	public int productUpdate(Map<String, Object> paramMap) throws Exception;
+	
 	public int productDelete(Map<String, Object> paramMap) throws Exception;
 	
 	//public int getCodeList(Map<String, Object> paramMap) throws Exception;

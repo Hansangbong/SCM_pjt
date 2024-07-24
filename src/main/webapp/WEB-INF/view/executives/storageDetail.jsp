@@ -4,10 +4,10 @@
 
 	<c:forEach items="${list}" var="object" varStatus="i">
 		<tr class="storageDetail">
-			<td style="text-align: center;"><input value="${object.storage_name}"  style="width: 70px; border: 1px solid white; "/></td>		
-			<td style="text-align: center;"><input value="${object.item_name}"  style="width: 70px; border: 1px solid white;"/></td>		
-			<td style="text-align: right;"><input value="${object.item_price} 원" style="width: 70px; border: 1px solid white;text-align: right;"/></td>		
-			<td style="text-align: right;"><input value="${object.inventory_count}"  style="width: 70px; border: 1px solid white;text-align: right;"/></td>		
+			<td style="text-align: center;"><input value="${object.storage_name}" disabled style="width: 70px; border: 1px solid white; "/></td>		
+			<td style="text-align: center;"><input value="${object.item_name}" disabled style="width: 70px; border: 1px solid white;"/></td>		
+			<td style="text-align: right;"><input value="${object.item_price} 원" disabled style="width: 70px; border: 1px solid white;text-align: right;"/></td>		
+			<td style="text-align: right;"><input value="${object.inventory_count}"  disabled style="width: 70px; border: 1px solid white;text-align: right;"/></td>		
 		</tr>
 	</c:forEach>
 

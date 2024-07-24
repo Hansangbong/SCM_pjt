@@ -68,6 +68,8 @@ public interface ManagementDao {
 	
 	public int productRegist(Map<String, Object> paramMap) throws Exception;
 	
+	public int productUpdate(Map<String, Object> paramMap) throws Exception;
+	
 	public int comDetailCodeRegist(Map<String, Object> paramMap) throws Exception;
 	
 	public int comCodeDelete(Map<String, Object> paramMap) throws Exception;

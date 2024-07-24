@@ -10,37 +10,59 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <script type="text/javascript">
+	var pageSize = 10;
+	var pageBlockPage = 10;
+
 	$(function() {
 		orderApproval()
 		returnApproval()
 		clickEvent()
 		radioChange()
 	})
-
+ 
 
 	function orderApproval(type) {
 	
+		var cpage = cpage || 1;
+		
+		
 		var param = {
-			type : type
-		}
+			type : type,
+			currentPage : cpage,
+			pageSize : pageSize
+		} 
 	
 		var callBackFunction = function(res) {
+			
+			console.log()
 	
-			$("#orderApprovalList").empty().append(res);
-	
+			$("#orderApprovalList").empty().append(res); 
+			
+			var pagieNavigateHtml = getPaginationHtml(cpage, $("#totcnt").val(), pageSize, pageBlockPage, "orderApproval")
+			$("#orderPag").empty().append(pagieNavigateHtml);
+			$("#currentPage").val(cpage)
 		}
 	
 		callAjax("/executives/orderApproval.do", "post", "text", false, param,
 				callBackFunction);
 	}
 	
-	function returnApproval(type) {	
+	function returnApproval(type, cpage) {	
+		
+		cpage = cpage || 1;
+		
 		var param = {
-				type : type
+				type : type,
+				currentPage : cpage,
+				pageSize : pageSize
 		}	
 		var callBackFunction = function(res) {
 	
 			$("#returnApprovalList").empty().append(res);
+			
+			var pagieNavigateHtml = getPaginationHtml(cpage, $("#retotcnt").val(), pageSize, pageBlockPage, "returnApproval")
+			$("#returnPag").empty().append(pagieNavigateHtml);
+			$("#returnCurrentPage").val(cpage)
 	
 		}
 		callAjax("/executives/returnApproval.do", "post", "text", false, param,
@@ -124,6 +146,7 @@
 </head>
 <body>
 	<input type="hidden" id="currentPage" value="">
+	<input type="hidden" id="returnCurrentPage" value="">
 	<!-- 현재페이지는 처음에 항상 1로 설정하여 넘김  -->
 	<input type="hidden" name="action" id="action" value="">
 	<div id="wrap_area">
@@ -160,10 +183,13 @@
 								<table class="col">
 									<caption>발주승인</caption>
 									<colgroup>
-										<col width="200px">
 										<col width="100px">
 										<col width="100px">
 										<col width="100px">
+										<col width="100px">
+										<col width="100px">
+										<col width="100px">
+										<col width="10px">
 									</colgroup>
 									<thead>
 										<tr>
@@ -173,11 +199,13 @@
 											<th scope="col">개수</th>
 											<th scope="col">총액</th>
 											<th scope="col">주문날짜</th>
+											<th scope="col">승인여부</th>
+											
 										</tr>
 									</thead>
 									<tbody id="orderApprovalList"></tbody>
 								</table>
-								<div class="paging_area" id="pagingNavi"></div>
+								<div class="paging_area" id="orderPag"></div>
 							</div>
 							
 							<div>
@@ -208,11 +236,12 @@
 												<th scope="col">총 가격</th>
 												<th scope="col">반품 신청 일자</th>
 												<th scope="col">반품 처리 일자</th>
+												<th style="background-color: white; border: solid 1px white;"></th>
 											</tr>
 										</thead>
 										<tbody id="returnApprovalList"></tbody>
 									</table>
-									<div class="paging_area" id="pagingNavi"></div>
+									<div class="paging_area" id="returnPag"></div>
 								</div>
 							</div>
 						</div>
